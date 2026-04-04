@@ -84,10 +84,11 @@ export interface PaymentCollection {
 
 export const medusa = {
   products: {
-    list: (params?: { limit?: number; collection_id?: string }) => {
+    list: (params?: { limit?: number; collection_id?: string; order?: string }) => {
       const searchParams = new URLSearchParams()
       if (params?.limit) searchParams.set('limit', String(params.limit))
       if (params?.collection_id) searchParams.set('collection_id', params.collection_id)
+      if (params?.order) searchParams.set('order', params.order)
       const query = searchParams.toString()
       return medusaFetch<{ products: MedusaProduct[]; count: number }>(
         `/products${query ? `?${query}` : ''}`
