@@ -1,24 +1,24 @@
-// Collection IDs — replace with actual IDs from Medusa admin after running create-subcategory-collections.ts
+// Collection IDs — populated from database after running create-subcategory-collections.ts
 export const COLLECTION_IDS = {
   women: {
-    id: 'women-collection-id',
+    id: 'pcol_01KNC0YTRA3X7VDBVE7TNBMPSM',
     subcategories: {
-      dresses: 'women-dresses-collection-id',
-      bags: 'women-bags-collection-id',
-      blouses: 'women-blouses-collection-id',
-      shoes: 'women-shoes-collection-id',
-      tops: 'women-tops-collection-id',
-      jeans: 'women-jeans-collection-id',
-      waitcoats: 'women-waitcoats-collection-id',
+      dresses: 'col_c38n5314q7',
+      bags: 'col_tr0vvrizgv',
+      blouses: 'col_zg0eh6rvgtb',
+      shoes: 'col_4fzaa9iqv0z',
+      tops: 'col_d5ybc7qv3b',
+      jeans: 'col_959ihwizfv',
+      waitcoats: 'col_v7zkbevix6s',
     },
   },
   men: {
-    id: 'men-collection-id',
+    id: 'pcol_01KNC0YTRZGJ5MJWBPKFKXMYVE',
     subcategories: {
-      shirts: 'men-shirts-collection-id',
-      tshirts: 'men-t-shirts-collection-id',
-      shoes: 'men-shoes-collection-id',
-      jeans: 'men-jeans-collection-id',
+      shirts: 'col_vlvodd3v1k',
+      tshirts: 'col_hpur805a3ar',
+      shoes: 'col_wfdow0w6tl7',
+      jeans: 'col_87x5vrgkj6k',
     },
   },
 } as const
