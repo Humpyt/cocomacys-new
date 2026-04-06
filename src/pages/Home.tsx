@@ -180,87 +180,86 @@ export function Home() {
         </div>
       </div>
 
-      {/* Shop by Look — 4-Poster Editorial Grid */}
+      {/* Branded Banner + Category Grid */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-serif font-bold">Shop by Look</h2>
-          <p className="text-sm text-gray-500 mt-1">Curated collections for every style</p>
+        {/* Full-width branded banner */}
+        <div className="relative w-full overflow-hidden mb-6">
+          <img
+            src="/mzmz.png"
+            alt="Welcome to Cocomacys"
+            className="w-full object-cover max-h-[320px]"
+          />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+
+        {/* Section headline */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Curated For You</p>
+            <h2 className="text-2xl font-serif font-bold">Shop by Category</h2>
+          </div>
+          <div className="hidden md:block w-32 h-px bg-gray-300" />
+        </div>
+
+        {/* 4-column category grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link
             to={getWomenCategoryHref('shoes')}
-            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+            className="group relative overflow-hidden block"
           >
-            <img
-              src="/homeposters/ladies%20shoes(1).png"
-              alt="Ladies Shoes"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 250,000</p>
-              <h3 className="text-white text-lg font-serif font-bold leading-tight">Ladies Shoes</h3>
-              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
-                Shop Now &rarr;
-              </span>
+            <div className="aspect-[3/4] overflow-hidden mb-3">
+              <img
+                src="/ladies-shoes.png"
+                alt="Ladies Shoes"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
+              />
             </div>
+            <h3 className="font-bold text-sm mb-1">Ladies Shoes</h3>
+            <p className="text-xs text-gray-500">Heels, flats &amp; more</p>
           </Link>
 
           <Link
             to={getWomenCategoryHref('blouses')}
-            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+            className="group relative overflow-hidden block"
           >
-            <img
-              src="/homeposters/women%20blouse(1).png"
-              alt="Women Blouse"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 150,000</p>
-              <h3 className="text-white text-lg font-serif font-bold leading-tight">Women Blouse</h3>
-              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
-                Shop Now &rarr;
-              </span>
+            <div className="aspect-[3/4] overflow-hidden mb-3">
+              <img
+                src="/women-blouse.png"
+                alt="Women's Blouses"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
+              />
             </div>
-          </Link>
-
-          <Link
-            to={getWomenCategoryHref('bags')}
-            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
-          >
-            <img
-              src="/homeposters/handbag(1).png"
-              alt="Handbags"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 180,000</p>
-              <h3 className="text-white text-lg font-serif font-bold leading-tight">Handbags</h3>
-              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
-                Shop Now &rarr;
-              </span>
-            </div>
+            <h3 className="font-bold text-sm mb-1">Women's Blouses</h3>
+            <p className="text-xs text-gray-500">Effortless everyday style</p>
           </Link>
 
           <Link
             to={getMenCategoryHref('shirts')}
-            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+            className="group relative overflow-hidden block"
           >
-            <img
-              src="/homeposters/mens%20shirt(1).png"
-              alt="Men's Shirts"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 200,000</p>
-              <h3 className="text-white text-lg font-serif font-bold leading-tight">Men's Shirts</h3>
-              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
-                Shop Now &rarr;
-              </span>
+            <div className="aspect-[3/4] overflow-hidden mb-3">
+              <img
+                src="/mens-shirt.png"
+                alt="Men's Shirts"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
+              />
             </div>
+            <h3 className="font-bold text-sm mb-1">Men's Shirts</h3>
+            <p className="text-xs text-gray-500">Sharp looks for every day</p>
+          </Link>
+
+          <Link
+            to={getWomenCategoryHref('bags')}
+            className="group relative overflow-hidden block"
+          >
+            <div className="aspect-[3/4] overflow-hidden mb-3">
+              <img
+                src="/handbag.png"
+                alt="Handbags"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
+              />
+            </div>
+            <h3 className="font-bold text-sm mb-1">Handbags</h3>
+            <p className="text-xs text-gray-500">Your perfect carry-along</p>
           </Link>
         </div>
       </div>
