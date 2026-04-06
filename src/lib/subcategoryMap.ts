@@ -1,24 +1,24 @@
-// Collection IDs — populated from database after running create-subcategory-collections.ts
+// Collection IDs — updated to Express-era IDs matching database after fix-collection-ids.cjs
 export const COLLECTION_IDS = {
   women: {
-    id: 'pcol_01KNC0YTRA3X7VDBVE7TNBMPSM',
+    id: 'col_fe3b00e52346f2ca4295980',
     subcategories: {
-      dresses: 'col_c38n5314q7',
-      bags: 'col_tr0vvrizgv',
-      blouses: 'col_zg0eh6rvgtb',
-      shoes: 'col_4fzaa9iqv0z',
-      tops: 'col_d5ybc7qv3b',
-      jeans: 'col_959ihwizfv',
-      waitcoats: 'col_v7zkbevix6s',
+      dresses: 'col_69af05c60590b95d99e809c',
+      bags: 'col_4c8dcf619e2c55773345601',
+      blouses: 'col_c0cd31e98ad00905e6f2873',
+      shoes: 'col_877b745c118251a37b9c2ee',
+      tops: 'col_877b745c118251a37b9c2ee',
+      jeans: 'col_4b78af1e8cd5e6f1a0db5ea',
+      waitcoats: 'col_db3ca016e002339afc5e22d',
     },
   },
   men: {
-    id: 'pcol_01KNC0YTRZGJ5MJWBPKFKXMYVE',
+    id: 'col_51a5bd36f91f6dbfc6e1e63',
     subcategories: {
-      shirts: 'col_vlvodd3v1k',
-      tshirts: 'col_hpur805a3ar',
-      shoes: 'col_wfdow0w6tl7',
-      jeans: 'col_87x5vrgkj6k',
+      shirts: 'col_ffd9fd01d18dcef0b63ffca',
+      tshirts: 'col_98b6d5a172ebdfdb3250622',
+      shoes: 'col_5818db7ca7ac573c2082a02',
+      jeans: 'col_74bb9be9cd10be2ee887a8e',
     },
   },
 } as const
