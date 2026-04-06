@@ -18,7 +18,7 @@ import {
 } from '../lib/api';
 import { getImageSrc } from '../lib/images';
 import { COLLECTION_IDS } from '../lib/subcategoryMap';
-import { getMenCategoryHref } from '../lib/navigation';
+import { getMenCategoryHref, getWomenCategoryHref } from '../lib/navigation';
 
 function toCardProps(product: ApiProductRecord) {
   const image = getImageSrc(getProductImage(product));
@@ -180,28 +180,87 @@ export function Home() {
         </div>
       </div>
 
-      {/* Anticipated Arrivals */}
+      {/* Shop by Look — 4-Poster Editorial Grid */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-black text-white p-8 flex flex-col justify-center items-center text-center">
-            <div className="w-32 h-32 border-2 border-white rounded-full flex items-center justify-center mb-6">
-              <span className="text-4xl font-serif">*</span>
+        <div className="mb-6">
+          <h2 className="text-2xl font-serif font-bold">Shop by Look</h2>
+          <p className="text-sm text-gray-500 mt-1">Curated collections for every style</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          <Link
+            to={getWomenCategoryHref('shoes')}
+            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+          >
+            <img
+              src="/homeposters/ladies%20shoes(1).png"
+              alt="Ladies Shoes"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 250,000</p>
+              <h3 className="text-white text-lg font-serif font-bold leading-tight">Ladies Shoes</h3>
+              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
+                Shop Now &rarr;
+              </span>
             </div>
-            <h2 className="text-3xl font-serif mb-4">This season's most anticipated arrivals from the best brands.</h2>
-          </div>
-          <Link to="/product" className="group cursor-pointer">
-            <div className="aspect-square overflow-hidden mb-4">
-              <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=600" alt="DIOR" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            <h3 className="font-bold text-lg mb-1">DIOR</h3>
-            <p className="text-sm">J' adore l'Or essence featuring notes of jasmine, rose &amp; ylang-ylang.</p>
           </Link>
-          <Link to="/product" className="group cursor-pointer">
-            <div className="aspect-square overflow-hidden mb-4">
-              <img src="https://images.unsplash.com/photo-1615486171448-4af4e0311488?auto=format&fit=crop&q=80&w=600" alt="Fiesta" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+
+          <Link
+            to={getWomenCategoryHref('blouses')}
+            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+          >
+            <img
+              src="/homeposters/women%20blouse(1).png"
+              alt="Women Blouse"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 150,000</p>
+              <h3 className="text-white text-lg font-serif font-bold leading-tight">Women Blouse</h3>
+              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
+                Shop Now &rarr;
+              </span>
             </div>
-            <h3 className="font-bold text-lg mb-1">Fiesta</h3>
-            <p className="text-sm">Celebrating 90 years &amp; introducing the new 2026 color: Lavender.</p>
+          </Link>
+
+          <Link
+            to={getWomenCategoryHref('bags')}
+            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+          >
+            <img
+              src="/homeposters/handbag(1).png"
+              alt="Handbags"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 180,000</p>
+              <h3 className="text-white text-lg font-serif font-bold leading-tight">Handbags</h3>
+              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
+                Shop Now &rarr;
+              </span>
+            </div>
+          </Link>
+
+          <Link
+            to={getMenCategoryHref('shirts')}
+            className="group relative aspect-[3/4] overflow-hidden bg-gray-100 block"
+          >
+            <img
+              src="/homeposters/mens%20shirt(1).png"
+              alt="Men's Shirts"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-xs uppercase tracking-widest mb-1">Starting from 200,000</p>
+              <h3 className="text-white text-lg font-serif font-bold leading-tight">Men's Shirts</h3>
+              <span className="inline-block mt-2 text-xs font-bold text-black bg-white px-3 py-1 group-hover:bg-gray-100 transition-colors">
+                Shop Now &rarr;
+              </span>
+            </div>
           </Link>
         </div>
       </div>
