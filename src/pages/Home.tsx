@@ -18,6 +18,7 @@ import {
 } from '../lib/api';
 import { getImageSrc } from '../lib/images';
 import { COLLECTION_IDS } from '../lib/subcategoryMap';
+import { getMenCategoryHref } from '../lib/navigation';
 
 function toCardProps(product: ApiProductRecord) {
   const image = getImageSrc(getProductImage(product));
@@ -146,13 +147,38 @@ export function Home() {
         align="left"
       />
 
-      <PromoBanner
-        image="https://images.unsplash.com/photo-1518605368461-1e1e111e1b6a?auto=format&fit=crop&q=80&w=2000"
-        title="World Soccer HQ"
-        subtitle="Dedicated team gear worthy of every fan."
-        buttonText="Shop now"
-        align="left"
-      />
+      {/* Men's Shirts Editorial Section */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden">
+          {/* Editorial content side */}
+          <div className="bg-[#1a1a2e] text-white flex flex-col justify-center p-10 lg:p-16">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-4">Collection</p>
+            <h2 className="text-4xl lg:text-6xl font-serif font-bold mb-4 leading-tight">
+              The Season<br />Starts Here
+            </h2>
+            <p className="text-gray-300 text-base mb-8 max-w-sm">
+              Sharp collars, clean cuts, and fabrics that move with you — from kickoff to the office.
+            </p>
+            <Link
+              to={getMenCategoryHref('shirts')}
+              className="inline-flex items-center gap-2 bg-white text-black px-8 py-3 font-bold hover:bg-gray-100 transition-colors self-start"
+            >
+              Shop Men's Shirts
+              <span className="text-lg">&rarr;</span>
+            </Link>
+          </div>
+
+          {/* Poster image side */}
+          <div className="relative overflow-hidden">
+            <img
+              src="/horizontal_poster.jpg"
+              alt="Men's Shirts Collection"
+              className="w-full h-full object-cover min-h-[320px] md:min-h-[400px]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/30 to-transparent" />
+          </div>
+        </div>
+      </div>
 
       {/* Anticipated Arrivals */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
