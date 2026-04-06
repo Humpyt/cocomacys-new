@@ -61,7 +61,7 @@ const LOVED_TABS = [
 type LovedTabKey = (typeof LOVED_TABS)[number]['key'];
 
 export function Home() {
-  const [trendingProducts, setTrendingProducts] = useState<ApiProductRecord[]>([]);
+  const [mensProducts, setMensProducts] = useState<ApiProductRecord[]>([]);
   const [clearanceProducts, setClearanceProducts] = useState<ApiProductRecord[]>([]);
   const [discoverProducts, setDiscoverProducts] = useState<ApiProductRecord[]>([]);
   const [lovedProducts, setLovedProducts] = useState<ApiProductRecord[]>([]);
@@ -74,7 +74,7 @@ export function Home() {
       .list({ limit: 200, order: 'created_at DESC' })
       .then(({ products }) => {
         const withImages = products.filter(p => p.images && p.images.length > 0);
-        setTrendingProducts(withImages.slice(0, 6));
+        setMensProducts(withImages.filter(p => p.category?.toLowerCase().includes('men')).slice(0, 6));
         setClearanceProducts(withImages.filter(isProductOnSale).slice(0, 6));
         setDiscoverProducts(withImages.filter(p => !isProductOnSale(p)).slice(0, 6));
       })
@@ -109,11 +109,11 @@ export function Home() {
         </div>
       )}
 
-      {!loading && trendingProducts.length === 0 && clearanceProducts.length === 0 && (
+      {!loading && mensProducts.length === 0 && clearanceProducts.length === 0 && (
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 m-4 rounded">
           <strong>No products loaded.</strong> Check console (F12) for API errors.
           <br />
-          <span className="text-sm">Trending: {trendingProducts.length} | Clearance: {clearanceProducts.length}</span>
+          <span className="text-sm">Men's: {mensProducts.length} | Clearance: {clearanceProducts.length}</span>
         </div>
       )}
 
@@ -181,8 +181,8 @@ export function Home() {
       </div>
 
       <ProductCarousel
-        title="Trending now"
-        products={trendingProducts.map(toCardProps)}
+        title="Men's Section"
+        products={mensProducts.map(toCardProps)}
       />
 
       {/* Clearance Banner */}
@@ -236,8 +236,8 @@ export function Home() {
       />
 
       <ProductCarousel
-        title="Recently viewed items"
-        products={trendingProducts.slice(0, 2).map(toCardProps)}
+        title="Men's Picks"
+        products={mensProducts.slice(0, 4).map(toCardProps)}
       />
     </main>
   );
