@@ -62,6 +62,7 @@ type LovedTabKey = (typeof LOVED_TABS)[number]['key'];
 
 export function Home() {
   const [mensProducts, setMensProducts] = useState<ApiProductRecord[]>([]);
+  const [womensPicks, setWomensPicks] = useState<ApiProductRecord[]>([]);
   const [clearanceProducts, setClearanceProducts] = useState<ApiProductRecord[]>([]);
   const [discoverProducts, setDiscoverProducts] = useState<ApiProductRecord[]>([]);
   const [lovedProducts, setLovedProducts] = useState<ApiProductRecord[]>([]);
@@ -74,11 +75,25 @@ export function Home() {
       .list({ limit: 200, order: 'created_at DESC' })
       .then(({ products }) => {
         const withImages = products.filter(p => p.images && p.images.length > 0);
-        setMensProducts(withImages.filter(p => {
+
+        // Shuffle men's products for a fresh, curated assortment each visit
+        const mensAll = withImages.filter(p => {
           const cid = p.collection_id;
           return cid === COLLECTION_IDS.men.id ||
             Object.values(COLLECTION_IDS.men.subcategories).includes(cid as typeof COLLECTION_IDS.men.subcategories[keyof typeof COLLECTION_IDS.men.subcategories]);
-        }).slice(0, 6));
+        });
+        const shuffled = mensAll.sort(() => Math.random() - 0.5);
+
+        setMensProducts(shuffled.slice(0, 8));
+
+        // Women's picks — shuffled cross-section of women's subcategories
+        const womensAll = withImages.filter(p => {
+          const cid = p.collection_id;
+          return cid === COLLECTION_IDS.women.id ||
+            Object.values(COLLECTION_IDS.women.subcategories).includes(cid as typeof COLLECTION_IDS.women.subcategories[keyof typeof COLLECTION_IDS.women.subcategories]);
+        });
+        setWomensPicks(womensAll.sort(() => Math.random() - 0.5).slice(0, 8));
+
         setClearanceProducts(withImages.filter(isProductOnSale).slice(0, 6));
         setDiscoverProducts(withImages.filter(p => !isProductOnSale(p)).slice(0, 6));
       })
@@ -241,7 +256,7 @@ export function Home() {
 
       <ProductCarousel
         title="Men's Picks"
-        products={mensProducts.slice(0, 4).map(toCardProps)}
+        products={womensPicks.map(toCardProps)}
       />
     </main>
   );
