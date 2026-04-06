@@ -5,32 +5,25 @@ import { getMenCategoryHref, getWomenCategoryHref } from '../lib/navigation';
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=2000',
-    title: 'Spring Fashion',
-    subtitle: "Discover the season's freshest looks",
-    buttonText: 'Shop Now',
+    image: '/headerSlider/women.jpg',
+    title: 'Dress the Moment',
+    subtitle: 'Fresh finds for every occasion — from desk to dinner.',
+    buttonText: 'Shop Women',
     link: '/women',
   },
   {
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=2000',
-    title: "Men's Essentials",
-    subtitle: 'Elevate your everyday style',
+    image: '/headerSlider/Dresses.jpg',
+    title: 'The Edit: Dresses',
+    subtitle: 'From flowingmaxi to sleek mini — find your silhouette.',
+    buttonText: 'Shop Dresses',
+    link: getWomenCategoryHref('dresses'),
+  },
+  {
+    image: '/headerSlider/men-shirts.jpg',
+    title: 'Sharp Ends Here',
+    subtitle: 'Tailored shirts and everyday essentials, built to move.',
     buttonText: 'Shop Men',
-    link: '/men',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=2000',
-    title: 'Handbag Highlights',
-    subtitle: 'Fresh carryalls and polished finishing touches',
-    buttonText: 'Shop Handbags',
-    link: getWomenCategoryHref('bags'),
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&q=80&w=2000',
-    title: 'Layering Essentials',
-    subtitle: 'Outer layers and polished toppers for the season',
-    buttonText: 'Shop Layers',
-    link: getWomenCategoryHref('waistcoats'),
+    link: getMenCategoryHref('shirts'),
   },
 ];
 
