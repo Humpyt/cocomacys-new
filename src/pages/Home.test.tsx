@@ -91,7 +91,7 @@ describe('Home page', () => {
     expect(await screen.findAllByText('Fresh Arrival')).not.toHaveLength(0);
   });
 
-  it('renders category sections and fetches collection-specific products', async () => {
+  it('renders CategoryStrip with category links and fetches trending products', async () => {
     const womenShoesProduct = makeProduct({
       id: 10,
       name: 'Women Shoes Product',
@@ -104,17 +104,14 @@ describe('Home page', () => {
     });
 
     productsListMock.mockImplementation(async (params?: { collection_id?: string; gender?: string; limit?: number; order?: string }) => {
-      // Main homepage products fetch
+      // Main homepage products fetch (limit 200)
       if (params?.limit === 200) {
         return { products: [womenShoesProduct, menShoesProduct] };
       }
 
-      // Category section fetches
-      if (params?.collection_id === COLLECTION_IDS.women.subcategories.shoes) {
-        return { products: [womenShoesProduct] };
-      }
-      if (params?.collection_id === COLLECTION_IDS.men.subcategories.shoes) {
-        return { products: [menShoesProduct] };
+      // Loved tab fetch (new-arrivals default)
+      if (params?.limit === 6 && params?.order === 'created_at DESC') {
+        return { products: [womenShoesProduct, menShoesProduct] };
       }
 
       return { products: [] };
@@ -128,18 +125,12 @@ describe('Home page', () => {
 
     await waitFor(() => {
       expect(productsListMock).toHaveBeenCalledWith({ limit: 200, order: 'created_at DESC' });
-      expect(productsListMock).toHaveBeenCalledWith({
-        collection_id: COLLECTION_IDS.women.subcategories.shoes,
-        gender: 'women',
-        limit: 6,
-        order: 'created_at DESC',
-      });
-      expect(productsListMock).toHaveBeenCalledWith({
-        collection_id: COLLECTION_IDS.men.subcategories.shoes,
-        gender: 'men',
-        limit: 6,
-        order: 'created_at DESC',
-      });
+      expect(productsListMock).toHaveBeenCalledWith({ limit: 6, order: 'created_at DESC' });
     });
+
+    // Verify CategoryStrip renders with category links (use exact match to avoid multiple matches)
+    expect(await screen.findByText("Women's Shoes", { exact: true })).toBeInTheDocument();
+    expect(await screen.findByText("Men's Shoes", { exact: true })).toBeInTheDocument();
+    expect(await screen.findAllByText('Handbags')).toHaveLength(4); // Multiple Handbags in the page
   });
 });
