@@ -83,6 +83,12 @@ router.get('/google/callback',
     failureRedirect: `${process.env.FRONTEND_URL}/admin/login?error=auth_failed`
   }),
   (req, res) => {
+    // Store customer in session for storefront auth context
+    req.session.customer = {
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+    };
     const returnTo = req.session.returnTo || '/admin';
     delete req.session.returnTo;
     res.redirect(returnTo);
