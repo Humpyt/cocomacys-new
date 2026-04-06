@@ -7,6 +7,7 @@ import { Home } from './pages/Home';
 import { Women } from './pages/Women';
 import { Men } from './pages/Men';
 import { ProductPage } from './pages/ProductPage';
+import { Contact } from './pages/Contact';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
             <Route path="/product" element={<ProductPage />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
           <Footer />
         </div>

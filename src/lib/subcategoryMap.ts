@@ -19,6 +19,8 @@ export const COLLECTION_IDS = {
       tshirts: 'col_98b6d5a172ebdfdb3250622',
       shoes: 'col_5818db7ca7ac573c2082a02',
       jeans: 'col_74bb9be9cd10be2ee887a8e',
+      ties: 'col_3354f3c3d6fb90b73136dda',
+      bowties: 'col_b298d6d381ca86c994e5c07',
     },
   },
 } as const

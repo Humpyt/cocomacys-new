@@ -21,8 +21,8 @@ export function Header() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-1">
           <button className="lg:hidden"><Menu size={24} /></button>
-          <Link to="/" className="text-3xl font-serif font-bold tracking-tighter text-orange-600 flex items-center">
-            <span className="text-4xl mr-1">★</span> coco fashion brands
+          <Link to="/" className="flex items-center">
+            <img src="/coco-logo.png" alt="Cocomacys" className="h-12 w-auto object-contain" />
           </Link>
         </div>
 
@@ -43,12 +43,8 @@ export function Header() {
             <button className="bg-black text-white px-4 py-1.5 rounded font-bold">Sign In</button>
           </div>
           <div className="hidden lg:flex items-center space-x-1 cursor-pointer">
-            <MapPin size={20} />
-            <span className="font-medium">Your store</span>
-          </div>
-          <div className="hidden lg:flex items-center space-x-1 cursor-pointer">
             <Gift size={20} />
-            <span className="font-medium">Gift Registry</span>
+            <span className="font-medium">Registry</span>
           </div>
           <div className="cursor-pointer relative">
             <ShoppingBag size={24} />
@@ -58,26 +54,17 @@ export function Header() {
       </div>
 
       {/* Navigation */}
-      <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 hidden lg:flex items-center justify-between text-sm font-medium">
+      <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 hidden lg:flex items-center text-sm font-medium">
         <div className="flex items-center space-x-1 cursor-pointer">
           <Menu size={20} />
           <span>Shop All</span>
         </div>
-        <div className="flex space-x-6">
+        <div className="flex space-x-6 ml-8">
           <Link to="/women" className="hover:underline">Women</Link>
           <Link to="/men" className="hover:underline">Men</Link>
-          <Link to="/" className="hover:underline">Beauty</Link>
-          <Link to="/" className="hover:underline">Shoes</Link>
-          <Link to="/" className="hover:underline">Home</Link>
-          <Link to="/" className="hover:underline">Jewelry</Link>
-          <Link to="/" className="hover:underline">Handbags</Link>
-          <Link to="/" className="hover:underline">Furniture & Mattresses</Link>
-          <Link to="/" className="hover:underline">Kids & Baby</Link>
-          <Link to="/" className="text-orange-600 font-bold hover:underline">Toys"R"Us</Link>
-          <Link to="/" className="hover:underline">Electronics</Link>
-          <Link to="/" className="hover:underline">Gifts</Link>
-          <Link to="/" className="hover:underline">New & Trending</Link>
-          <Link to="/" className="text-orange-600 font-bold hover:underline">Sale</Link>
+          <Link to="/women?category=shoes" className="hover:underline">Shoes</Link>
+          <Link to="/women?category=bags" className="hover:underline">Handbags</Link>
+          <Link to="/contact" className="hover:underline">Contact</Link>
         </div>
       </nav>
     </header>

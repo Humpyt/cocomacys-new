@@ -37,24 +37,34 @@ interface Product {
 
 const mensCategories = [
   {
-    image: '/headerSlider/men-shirts.jpg',
+    image: '/men product category images/mens shirt.png',
     title: 'Shirts',
     href: getMenCategoryHref('shirts'),
   },
   {
-    image: '/homeposters/mens-shirt.png',
+    image: '/men product category images/t-shirts.jpeg',
     title: 'T-Shirts',
     href: getMenCategoryHref('tshirts'),
   },
   {
-    image: '/homeposters/ladies-shoes.png',
+    image: '/men product category images/shoes.png',
     title: 'Shoes',
     href: getMenCategoryHref('shoes'),
   },
   {
-    image: '/headerSlider/men-shirts.jpg',
+    image: '/men product category images/Jeans.jpeg',
     title: 'Jeans',
     href: getMenCategoryHref('jeans'),
+  },
+  {
+    image: '/men product category images/ties.png',
+    title: 'Ties',
+    href: getMenCategoryHref('ties'),
+  },
+  {
+    image: '/men product category images/bow-ties.png',
+    title: 'Bow-ties',
+    href: getMenCategoryHref('bowties'),
   },
 ];
 
@@ -97,19 +107,11 @@ export function Men() {
 
     const fetchProducts = async () => {
       try {
-        if (activeCategory) {
-          // Fetch specific subcategory
-          const { products } = await api.products.list({ collection_id: activeCollectionId });
-          setProducts(products.map(mapProduct));
-        } else {
-          // Fetch all men's subcategories in parallel and shuffle for variety
-          const { products: shirts } = await api.products.list({ collection_id: COLLECTION_IDS.men.subcategories.shirts });
-          const { products: tshirts } = await api.products.list({ collection_id: COLLECTION_IDS.men.subcategories.tshirts });
-          const { products: shoes } = await api.products.list({ collection_id: COLLECTION_IDS.men.subcategories.shoes });
-          const { products: jeans } = await api.products.list({ collection_id: COLLECTION_IDS.men.subcategories.jeans });
-          const all = [...shirts, ...tshirts, ...shoes, ...jeans].sort(() => Math.random() - 0.5);
-          setProducts(all.map(mapProduct));
-        }
+        const listParams = activeCategory
+          ? { collection_id: activeCollectionId }
+          : { gender: 'men' as const };
+        const { products } = await api.products.list(listParams);
+        setProducts(products.map(mapProduct));
       } catch {
         setProducts([]);
       } finally {

@@ -2,7 +2,9 @@ import React from 'react';
 import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface ProductCardProps {
+export interface ProductCardProps {
+  id?: string;
+  href?: string;
   image: string;
   brand: string;
   name: string;
@@ -15,9 +17,10 @@ interface ProductCardProps {
   promo?: string;
 }
 
-export function ProductCard({ image, brand, name, price, originalPrice, discount, rating, reviews, colors, promo }: ProductCardProps) {
+export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, colors, promo }: ProductCardProps) {
+  const productUrl = href || (id != null ? `/product?id=${encodeURIComponent(id)}` : '/product');
   return (
-    <Link to="/product" className="flex flex-col group cursor-pointer font-sans min-w-[200px] max-w-[280px]">
+    <Link to={productUrl} className="flex flex-col group cursor-pointer font-sans min-w-[200px] max-w-[280px]">
       <div className="relative aspect-[3/4] mb-3 overflow-hidden bg-gray-100">
         <img src={image} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-50" onClick={(e) => e.preventDefault()}>

@@ -52,10 +52,10 @@ const STRIP_CATEGORIES = [
 ];
 
 const LOVED_TABS = [
-  { key: 'new-arrivals', label: 'New arrivals' },
-  { key: 'deals', label: 'Deals for you' },
   { key: 'dressy', label: 'Dressy looks' },
+  { key: 'deals', label: 'Deals for you' },
   { key: 'handbags', label: 'Spring handbags' },
+  { key: 'new-arrivals', label: 'New arrivals' },
 ] as const;
 
 type LovedTabKey = (typeof LOVED_TABS)[number]['key'];
@@ -63,10 +63,9 @@ type LovedTabKey = (typeof LOVED_TABS)[number]['key'];
 export function Home() {
   const [mensProducts, setMensProducts] = useState<ApiProductRecord[]>([]);
   const [womensPicks, setWomensPicks] = useState<ApiProductRecord[]>([]);
-  const [clearanceProducts, setClearanceProducts] = useState<ApiProductRecord[]>([]);
   const [discoverProducts, setDiscoverProducts] = useState<ApiProductRecord[]>([]);
   const [lovedProducts, setLovedProducts] = useState<ApiProductRecord[]>([]);
-  const [lovedTab, setLovedTab] = useState<LovedTabKey>('new-arrivals');
+  const [lovedTab, setLovedTab] = useState<LovedTabKey>('dressy');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,13 +75,13 @@ export function Home() {
       .then(({ products }) => {
         const withImages = products.filter(p => p.images && p.images.length > 0);
 
-        // Shuffle men's products for a fresh, curated assortment each visit
-        const mensAll = withImages.filter(p => {
+        // Men's shirts and shoes - shuffled for variety
+        const mensShirtsAndShoes = withImages.filter(p => {
           const cid = p.collection_id;
-          return cid === COLLECTION_IDS.men.id ||
-            Object.values(COLLECTION_IDS.men.subcategories).includes(cid as typeof COLLECTION_IDS.men.subcategories[keyof typeof COLLECTION_IDS.men.subcategories]);
+          return cid === COLLECTION_IDS.men.subcategories.shirts ||
+                 cid === COLLECTION_IDS.men.subcategories.shoes;
         });
-        const shuffled = mensAll.sort(() => Math.random() - 0.5);
+        const shuffled = mensShirtsAndShoes.sort(() => Math.random() - 0.5);
 
         setMensProducts(shuffled.slice(0, 8));
 
@@ -94,7 +93,6 @@ export function Home() {
         });
         setWomensPicks(womensAll.sort(() => Math.random() - 0.5).slice(0, 8));
 
-        setClearanceProducts(withImages.filter(isProductOnSale).slice(0, 6));
         setDiscoverProducts(withImages.filter(p => !isProductOnSale(p)).slice(0, 6));
       })
       .catch(err => {
@@ -128,11 +126,11 @@ export function Home() {
         </div>
       )}
 
-      {!loading && mensProducts.length === 0 && clearanceProducts.length === 0 && (
+      {!loading && mensProducts.length === 0 && (
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 m-4 rounded">
           <strong>No products loaded.</strong> Check console (F12) for API errors.
           <br />
-          <span className="text-sm">Men's: {mensProducts.length} | Clearance: {clearanceProducts.length}</span>
+          <span className="text-sm">Men's: {mensProducts.length}</span>
         </div>
       )}
 
@@ -204,27 +202,6 @@ export function Home() {
         products={mensProducts.map(toCardProps)}
       />
 
-      {/* Clearance Banner */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-black text-white p-12 text-center flex flex-col items-center justify-center">
-          <h2 className="text-5xl md:text-7xl font-serif font-bold italic mb-2">Clearance 40-70% <span className="text-3xl md:text-5xl not-italic">OFF</span></h2>
-          <p className="text-xl mb-8">Get it before it's gone!</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/women" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Women</Link>
-            <Link to="/men" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Men</Link>
-            <Link to="/women?category=dresses" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Dresses</Link>
-            <Link to="/men?category=shoes" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Shoes</Link>
-            <Link to="/women?category=bags" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Handbags</Link>
-            <Link to="/men?category=shirts" className="bg-white text-black px-8 py-2 font-bold hover:bg-gray-200">Shirts</Link>
-          </div>
-        </div>
-      </div>
-
-      <ProductCarousel
-        title="Shop clearance now"
-        products={clearanceProducts.map(toCardProps)}
-      />
-
       {/* Enjoy 30% OFF Banner */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="border border-gray-300 flex flex-col md:flex-row items-center p-6">
@@ -255,7 +232,7 @@ export function Home() {
       />
 
       <ProductCarousel
-        title="Men's Picks"
+        title="Women's Picks"
         products={womensPicks.map(toCardProps)}
       />
     </main>
