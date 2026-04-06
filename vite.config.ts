@@ -20,9 +20,9 @@ export default defineConfig(({mode}) => {
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
       proxy: {
-        '/api': 'http://localhost:3001',
-        '/auth': 'http://localhost:3001',
-        '/uploads': 'http://localhost:3001',
+        '/api': { target: 'http://localhost:3001', changeOrigin: true },
+        '/auth': { target: 'http://localhost:3001', changeOrigin: true },
+        '/uploads': { target: 'http://localhost:3001', changeOrigin: true },
       },
     },
   };
