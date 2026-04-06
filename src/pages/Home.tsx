@@ -74,7 +74,11 @@ export function Home() {
       .list({ limit: 200, order: 'created_at DESC' })
       .then(({ products }) => {
         const withImages = products.filter(p => p.images && p.images.length > 0);
-        setMensProducts(withImages.filter(p => p.category?.toLowerCase().includes('men')).slice(0, 6));
+        setMensProducts(withImages.filter(p => {
+          const cid = p.collection_id;
+          return cid === COLLECTION_IDS.men.id ||
+            Object.values(COLLECTION_IDS.men.subcategories).includes(cid as typeof COLLECTION_IDS.men.subcategories[keyof typeof COLLECTION_IDS.men.subcategories]);
+        }).slice(0, 6));
         setClearanceProducts(withImages.filter(isProductOnSale).slice(0, 6));
         setDiscoverProducts(withImages.filter(p => !isProductOnSale(p)).slice(0, 6));
       })
