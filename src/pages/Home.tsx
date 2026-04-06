@@ -18,7 +18,7 @@ import {
 } from '../lib/api';
 import { getImageSrc } from '../lib/images';
 import { COLLECTION_IDS } from '../lib/subcategoryMap';
-import { getMenCategoryHref, getWomenCategoryHref } from '../lib/navigation';
+import { getMenCategoryHref } from '../lib/navigation';
 
 function toCardProps(product: ApiProductRecord) {
   const image = getImageSrc(getProductImage(product));
@@ -177,90 +177,6 @@ export function Home() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/30 to-transparent" />
           </div>
-        </div>
-      </div>
-
-      {/* Branded Banner + Category Grid */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Full-width branded banner */}
-        <div className="relative w-full overflow-hidden mb-6">
-          <img
-            src="/mzmz.png"
-            alt="Welcome to Cocomacys"
-            className="w-full object-cover max-h-[320px]"
-          />
-        </div>
-
-        {/* Section headline */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Curated For You</p>
-            <h2 className="text-2xl font-serif font-bold">Shop by Category</h2>
-          </div>
-          <div className="hidden md:block w-32 h-px bg-gray-300" />
-        </div>
-
-        {/* 4-column category grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link
-            to={getWomenCategoryHref('shoes')}
-            className="group relative overflow-hidden block"
-          >
-            <div className="aspect-[3/4] overflow-hidden mb-3">
-              <img
-                src="/ladies-shoes.png"
-                alt="Ladies Shoes"
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
-              />
-            </div>
-            <h3 className="font-bold text-sm mb-1">Ladies Shoes</h3>
-            <p className="text-xs text-gray-500">Heels, flats &amp; more</p>
-          </Link>
-
-          <Link
-            to={getWomenCategoryHref('blouses')}
-            className="group relative overflow-hidden block"
-          >
-            <div className="aspect-[3/4] overflow-hidden mb-3">
-              <img
-                src="/women-blouse.png"
-                alt="Women's Blouses"
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
-              />
-            </div>
-            <h3 className="font-bold text-sm mb-1">Women's Blouses</h3>
-            <p className="text-xs text-gray-500">Effortless everyday style</p>
-          </Link>
-
-          <Link
-            to={getMenCategoryHref('shirts')}
-            className="group relative overflow-hidden block"
-          >
-            <div className="aspect-[3/4] overflow-hidden mb-3">
-              <img
-                src="/mens-shirt.png"
-                alt="Men's Shirts"
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
-              />
-            </div>
-            <h3 className="font-bold text-sm mb-1">Men's Shirts</h3>
-            <p className="text-xs text-gray-500">Sharp looks for every day</p>
-          </Link>
-
-          <Link
-            to={getWomenCategoryHref('bags')}
-            className="group relative overflow-hidden block"
-          >
-            <div className="aspect-[3/4] overflow-hidden mb-3">
-              <img
-                src="/handbag.png"
-                alt="Handbags"
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 bg-[#f5f5f5]"
-              />
-            </div>
-            <h3 className="font-bold text-sm mb-1">Handbags</h3>
-            <p className="text-xs text-gray-500">Your perfect carry-along</p>
-          </Link>
         </div>
       </div>
 
