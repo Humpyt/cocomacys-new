@@ -154,45 +154,6 @@ export function Home() {
         align="left"
       />
 
-      {/* Star Rewards Challenge Banner */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-[#fdf3e7] p-8 flex flex-col md:flex-row items-center justify-between rounded-sm">
-          <div className="flex-1 text-center md:text-left mb-6 md:mb-0">
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-              <span className="text-orange-600 text-2xl">*</span>
-              <span className="text-2xl font-bold tracking-wider">Star Rewards</span>
-            </div>
-            <h2 className="text-4xl font-serif font-bold text-orange-600 mb-2 italic">CHALLENGE</h2>
-            <div className="bg-yellow-400 text-black text-xs font-bold px-2 py-1 inline-block mb-4">SPRING STYLE EDITION</div>
-            <h3 className="text-5xl font-serif mb-2">Get <span className="font-bold">$10</span></h3>
-            <h4 className="text-3xl font-serif mb-4">in Star Money*</h4>
-            <p className="text-lg mb-6">when you shop any 2 of these 5 categories.</p>
-            <Link to="/contact" className="inline-flex bg-black text-white px-6 py-2 font-bold mb-4">Track your progress</Link>
-            <p className="text-xs text-gray-600 mb-2">*That's 1,000 bonus points. <Link to="/contact" className="underline">Exclusions & details</Link></p>
-            <p className="text-sm font-bold">Not a Star Rewards member? <Link to="/contact" className="underline">Join for free</Link></p>
-          </div>
-
-          <div className="flex-1 grid grid-cols-2 gap-4">
-            <Link to="/product" className="flex flex-col items-center cursor-pointer group">
-              <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=300" alt="Shoes" className="w-full aspect-square object-cover rounded-full mb-2 group-hover:opacity-90" />
-              <span className="text-sm underline">Women's & Men's Shoes</span>
-            </Link>
-            <Link to="/product" className="flex flex-col items-center cursor-pointer group">
-              <img src="https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&q=80&w=300" alt="Fragrance" className="w-full aspect-square object-cover rounded-full mb-2 group-hover:opacity-90" />
-              <span className="text-sm underline">Fragrance</span>
-            </Link>
-            <Link to="/product" className="flex flex-col items-center cursor-pointer group">
-              <img src="https://images.unsplash.com/photo-1515347619152-145c3298c368?auto=format&fit=crop&q=80&w=300" alt="Dresses" className="w-full aspect-square object-cover rounded-full mb-2 group-hover:opacity-90" />
-              <span className="text-sm underline">Dresses</span>
-            </Link>
-            <Link to="/product" className="flex flex-col items-center cursor-pointer group">
-              <img src="https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&q=80&w=300" alt="Handbags" className="w-full aspect-square object-cover rounded-full mb-2 group-hover:opacity-90" />
-              <span className="text-sm underline">Handbags</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
       {/* Anticipated Arrivals */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
