@@ -60,7 +60,6 @@ const LOVED_TABS = [
 type LovedTabKey = (typeof LOVED_TABS)[number]['key'];
 
 export function Home() {
-  const [allProducts, setAllProducts] = useState<ApiProductRecord[]>([]);
   const [trendingProducts, setTrendingProducts] = useState<ApiProductRecord[]>([]);
   const [clearanceProducts, setClearanceProducts] = useState<ApiProductRecord[]>([]);
   const [discoverProducts, setDiscoverProducts] = useState<ApiProductRecord[]>([]);
@@ -73,7 +72,6 @@ export function Home() {
     api.products
       .list({ limit: 200, order: 'created_at DESC' })
       .then(({ products }) => {
-        setAllProducts(products);
         const withImages = products.filter(p => p.images && p.images.length > 0);
         setTrendingProducts(withImages.slice(0, 6));
         setClearanceProducts(withImages.filter(isProductOnSale).slice(0, 6));
