@@ -7,9 +7,9 @@ interface CategorySectionSkeletonProps {
 export function CategorySectionSkeleton({ reverse = false }: CategorySectionSkeletonProps) {
   return (
     <div className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 ${reverse ? '' : ''}`}>
-      <div className={`grid grid-cols-1 md:grid-cols-2 gap-0 ${reverse ? 'md:flex-row-reverse' : ''}`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
         {/* Image skeleton */}
-        <div className="bg-gray-200 animate-pulse aspect-[3/4] md:aspect-auto md:col-span-1" />
+        <div className={`bg-gray-200 animate-pulse aspect-[3/4] md:aspect-auto md:col-span-1 ${reverse ? 'md:order-last' : ''}`} />
 
         {/* Content skeleton */}
         <div className="bg-[#fdf3e7] p-8 lg:p-16 flex flex-col justify-center md:col-span-1">

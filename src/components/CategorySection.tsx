@@ -20,6 +20,7 @@ interface CategorySectionProps {
   subtitle?: string;
   image: string;
   collectionId: string;
+  categorySlug?: string;
   gender: 'men' | 'women';
   reverse?: boolean;
   limit?: number;
@@ -50,6 +51,7 @@ export function CategorySection({
   subtitle,
   image,
   collectionId,
+  categorySlug,
   gender,
   reverse = false,
   limit = 6,
@@ -86,7 +88,7 @@ export function CategorySection({
     };
   }, [collectionId, gender, limit]);
 
-  const ctaHref = gender === 'women' ? getWomenCategoryHref(collectionId) : getMenCategoryHref(collectionId);
+  const ctaHref = gender === 'women' ? getWomenCategoryHref(categorySlug) : getMenCategoryHref(categorySlug);
 
   if (loading) {
     return <CategorySectionSkeleton reverse={reverse} />;
