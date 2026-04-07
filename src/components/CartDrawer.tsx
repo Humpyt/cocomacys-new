@@ -30,7 +30,7 @@ export function CartDrawer() {
       <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 flex flex-col shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-bold">Your Bag ({cart?.items.reduce((s, i) => s + i.quantity, 0) ?? 0})</h2>
+          <h2 className="text-lg font-bold">Your Bag ({(cart?.items ?? []).reduce((s, i) => s + i.quantity, 0) ?? 0})</h2>
           <button onClick={closeDrawer} className="p-1 hover:bg-gray-100 rounded">
             <X size={20} />
           </button>
@@ -111,7 +111,7 @@ export function CartDrawer() {
             <div className="flex justify-between font-bold text-lg">
               <span>Subtotal</span>
               <span>
-                USh {cart?.items.reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0).toFixed(2)}
+                USh {((cart?.items ?? []).reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0)).toFixed(2)}
               </span>
             </div>
             <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>
