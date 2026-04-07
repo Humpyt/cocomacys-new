@@ -1,0 +1,258 @@
+[
+  {
+    "brand": "Zara",
+    "product": "Classic Blouse",
+    "color": "Navy Blue",
+    "size": "M",
+    "price": "UGX 200,000",
+    "description": "A navy blue Zara classic blouse in size M delivers a clean, versatile look for work or weekend wear."
+  },
+  {
+    "brand": "Zara",
+    "product": "Satin Blouse",
+    "color": "Brown",
+    "size": "M",
+    "price": "UGX 200,000",
+    "description": "This brown Zara satin blouse in size M adds a soft sheen and elevated finish to any outfit."
+  },
+  {
+    "brand": "Vince Camuto",
+    "product": "Classic Blouse",
+    "color": "Mustard",
+    "size": "XS",
+    "price": "UGX 300,000",
+    "description": "A mustard Vince Camuto classic blouse in size XS brings bright color and refined everyday styling."
+  },
+  {
+    "brand": "Vince Camuto",
+    "product": "Classic Blouse",
+    "color": "Black Gold",
+    "size": "M",
+    "price": "UGX 250,000",
+    "description": "This black gold Vince Camuto blouse in size M pairs statement color contrast with an easy, flattering fit."
+  },
+  {
+    "brand": "Tommy Hilfiger",
+    "product": "Classic Blouse",
+    "color": "Burnt Orange",
+    "size": "XL",
+    "price": "UGX 250,000",
+    "description": "A burnt orange Tommy Hilfiger blouse in size XL offers warm tone and polished day-to-night versatility."
+  },
+  {
+    "brand": "Style & Co",
+    "product": "Classic Blouse",
+    "color": "Assorted",
+    "size": "S",
+    "price": "UGX 175,000",
+    "description": "This Style & Co classic blouse in size S is a practical, easy-to-style staple for daily wear."
+  },
+  {
+    "brand": "ON.34TH",
+    "product": "Classic Blouse",
+    "color": "Black",
+    "size": "0X",
+    "price": "UGX 200,000",
+    "description": "A black ON.34TH blouse in size 0X delivers a sleek silhouette that works across casual and office looks."
+  },
+  {
+    "brand": "MNG",
+    "product": "Classic Blouse",
+    "color": "Silver",
+    "size": "S",
+    "price": "UGX 150,000",
+    "description": "This silver MNG blouse in size S adds a modern metallic touch while remaining simple to style."
+  },
+  {
+    "brand": "MNG",
+    "product": "Classic Blouse",
+    "color": "Burnt Orange",
+    "size": "M",
+    "price": "UGX 250,000",
+    "description": "A burnt orange MNG blouse in size M gives bold color and a balanced fit for standout everyday dressing."
+  },
+  {
+    "brand": "MNG",
+    "product": "Classic Blouse",
+    "color": "Cream",
+    "size": "S",
+    "price": "UGX 200,000",
+    "description": "This cream MNG blouse in size S offers a soft neutral palette that layers effortlessly with wardrobe basics."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Classic Blouse",
+    "color": "Assorted",
+    "size": "L",
+    "price": "UGX 250,000",
+    "description": "A Kasper classic blouse in size L delivers dependable structure and easy all-day styling."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Floral Blouse",
+    "color": "Multi Floral",
+    "size": "PM",
+    "price": "UGX 250,000",
+    "description": "This Kasper multi floral blouse in size PM brings vibrant print detail with a polished silhouette."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Printed Blouse",
+    "color": "Multi Colored",
+    "size": "1X",
+    "price": "UGX 250,000",
+    "description": "A multi colored Kasper blouse in size 1X adds lively pattern and statement style to everyday outfits."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Floral Blouse",
+    "color": "Green Floral",
+    "size": "S",
+    "price": "UGX 300,000",
+    "description": "This green floral Kasper blouse in size S pairs fresh color with a refined, feminine finish."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Floral Blouse",
+    "color": "Orange Floral",
+    "size": "M",
+    "price": "UGX 380,000",
+    "description": "An orange floral Kasper blouse in size M offers bold print energy for elevated casual and dressy looks."
+  },
+  {
+    "brand": "Kasper",
+    "product": "Floral Blouse",
+    "color": "Green Floral",
+    "size": "XL",
+    "price": "UGX 250,000",
+    "description": "This green floral Kasper blouse in size XL delivers standout pattern with comfortable day-long wear."
+  },
+  {
+    "brand": "INC",
+    "product": "Three-Top Blouse Set",
+    "color": "Pink Red",
+    "size": "XL",
+    "price": "UGX 250,000",
+    "description": "The INC pink red three-top blouse set in size XL gives coordinated styling with bold, playful color."
+  },
+  {
+    "brand": "INC",
+    "product": "Patterned Blouse",
+    "color": "Yellow White",
+    "size": "XXL",
+    "price": "UGX 380,000",
+    "description": "A yellow white patterned INC blouse in size XXL brings bright print character with a polished fit."
+  },
+  {
+    "brand": "INC",
+    "product": "Printed Blouse",
+    "color": "Lime Black",
+    "size": "XS",
+    "price": "UGX 250,000",
+    "description": "This lime black INC blouse in size XS adds high-contrast color and a sharp contemporary look."
+  },
+  {
+    "brand": "INC",
+    "product": "Floral Blouse",
+    "color": "Red Floral",
+    "size": "M",
+    "price": "UGX 250,000",
+    "description": "A red floral INC blouse in size M combines vibrant pattern and an easy, flattering everyday shape."
+  },
+  {
+    "brand": "INC",
+    "product": "Floral Blouse",
+    "color": "Green Floral",
+    "size": "M",
+    "price": "UGX 380,000",
+    "description": "This green floral INC blouse in size M offers fresh print appeal and polished all-occasion styling."
+  },
+  {
+    "brand": "INC",
+    "product": "Classic Blouse",
+    "color": "Green",
+    "size": "S",
+    "price": "UGX 250,000",
+    "description": "A green INC classic blouse in size S delivers clean lines and rich color for versatile wardrobe pairing."
+  },
+  {
+    "brand": "INC",
+    "product": "Classic Blouse",
+    "color": "Black",
+    "size": "M",
+    "price": "UGX 250,000",
+    "description": "This black INC blouse in size M is a timeless staple designed for effortless repeat wear."
+  },
+  {
+    "brand": "Hawes & Curtis",
+    "product": "Classic Blouse",
+    "color": "Cream",
+    "size": "18 UK",
+    "price": "UGX 300,000",
+    "description": "A cream Hawes & Curtis blouse in size 18 UK brings tailored polish and soft neutral elegance."
+  },
+  {
+    "brand": "Hawes & Curtis",
+    "product": "Printed Blouse",
+    "color": "Light Blue & Red",
+    "size": "12 UK",
+    "price": "UGX 300,000",
+    "description": "This light blue and red Hawes & Curtis blouse in size 12 UK balances color contrast with structured style."
+  },
+  {
+    "brand": "Hawes & Curtis",
+    "product": "Floral Blouse",
+    "color": "Pink Floral",
+    "size": "12 UK",
+    "price": "UGX 300,000",
+    "description": "A pink floral Hawes & Curtis blouse in size 12 UK adds feminine print detail in a refined silhouette."
+  },
+  {
+    "brand": "Donna Karan",
+    "product": "Classic Blouse",
+    "color": "Nude Peach",
+    "size": "XL",
+    "price": "UGX 250,000",
+    "description": "This nude peach Donna Karan blouse in size XL offers soft color and graceful day-to-evening versatility."
+  },
+  {
+    "brand": "Donna Karan",
+    "product": "Classic Blouse",
+    "color": "Nude Peach",
+    "size": "XS",
+    "price": "UGX 250,000",
+    "description": "A nude peach Donna Karan blouse in size XS delivers understated elegance with a neat tailored profile."
+  },
+  {
+    "brand": "Donna Karan",
+    "product": "Classic Blouse",
+    "color": "Grey",
+    "size": "XL",
+    "price": "UGX 420,000",
+    "description": "This grey Donna Karan blouse in size XL pairs premium finish and modern neutral style."
+  },
+  {
+    "brand": "DKNY",
+    "product": "Sequin Blouse",
+    "color": "Black",
+    "size": "L",
+    "price": "UGX 300,000",
+    "description": "A black sequin DKNY blouse in size L adds subtle sparkle and elevated evening-ready flair."
+  },
+  {
+    "brand": "Calvin Klein",
+    "product": "Classic Blouse",
+    "color": "Cayenne",
+    "size": "XS",
+    "price": "UGX 200,000",
+    "description": "This cayenne Calvin Klein blouse in size XS brings bold color and a clean, contemporary cut."
+  },
+  {
+    "brand": "Anne Klein",
+    "product": "Printed Blouse",
+    "color": "Tropical Green Multi",
+    "size": "S",
+    "price": "UGX 250,000",
+    "description": "A tropical green multi Anne Klein blouse in size S delivers vibrant print with a fresh seasonal feel."
+  }
+]
