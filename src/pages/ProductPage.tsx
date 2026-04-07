@@ -113,6 +113,10 @@ export function ProductPage() {
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [productId]);
+
+  useEffect(() => {
     if (!productId) {
       setError('No product selected.');
       setLoading(false);
@@ -259,7 +263,7 @@ export function ProductPage() {
             )}
 
             <div className="flex items-baseline gap-2 mb-6">
-              <span className="text-3xl font-bold text-orange-600">{price}</span>
+              <span className="text-xl font-bold text-orange-600">{price}</span>
               {discount && <span className="text-orange-600 text-sm">({discount})</span>}
               {originalPrice != null && (
                 <span className="text-gray-500 line-through text-sm">{formatCurrency(originalPrice)}</span>
