@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Clearance - Cocomacys Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; color: #111827; min-height: 100vh; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+    header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .subtitle { color: #6b7280; font-size: 0.95rem; }
+    .user-info { display: flex; align-items: center; gap: 0.75rem; }
+    .user-email { font-size: 0.875rem; color: #6b7280; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04); }
+    .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group label { font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group input,
+    .form-group select { border: 1px solid #d1d5db; border-radius: 8px; padding: 0.65rem 0.75rem; font-size: 0.95rem; width: 100%; background: #fff; }
+    .form-group input:focus,
+    .form-group select:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .action-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .btn { border: none; border-radius: 8px; padding: 0.65rem 1rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+    .btn:hover { opacity: 0.96; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-secondary { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #f9fafb; }
+    .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .count { font-size: 0.95rem; color: #4b5563; }
+    .count strong { color: #111827; }
+    .checkbox-label { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #4b5563; }
+    input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th { text-align: left; padding: 0.85rem 1rem; border-bottom: 2px solid #e5e7eb; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; }
+    td { padding: 0.85rem 1rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    tr:hover td { background: #f9fafb; }
+    .product-name { font-weight: 600; max-width: 320px; }
+    .product-meta { font-size: 0.8rem; color: #6b7280; margin-top: 0.2rem; }
+    .product-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #9ca3af; }
+    .price-stack { display: flex; flex-direction: column; gap: 0.15rem; }
+    .clearance-badge { display: inline-block; background: #dcfce7; color: #166534; font-size: 0.75rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 999px; }
+    .muted { color: #9ca3af; }
+    .loading,
+    .empty { text-align: center; padding: 3rem 1rem; color: #6b7280; }
+    .message { border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem; font-size: 0.9rem; }
+    .message-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+    .message-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .hint { font-size: 0.85rem; color: #6b7280; }
+    @media (max-width: 720px) {
+      .container { padding: 1rem 0.75rem 2rem; }
+      .card { padding: 1rem; }
+      h1 { font-size: 1.45rem; }
+      th, td { padding-left: 0.65rem; padding-right: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Manage Clearance</h1>
+        <p class="subtitle">Update compare-at prices, filter products, and keep sale pricing tidy.</p>
+      </div>
+      <div class="user-info">
+        <span class="user-email" id="userEmail"></span>
+        <button class="btn btn-secondary" type="button" onclick="logout()">Sign out</button>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="card-title">Bulk Actions & Filters</div>
+      <div id="messageBox" aria-live="polite"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="compareAtPrice">Compare-at price</label>
+          <input type="number" id="compareAtPrice" placeholder="49.99" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label for="searchTerm">Search products</label>
+          <input type="search" id="searchTerm" placeholder="Search by name, brand, or id" oninput="handleFiltersChanged()">
+        </div>
+        <div class="form-group">
+          <label for="statusFilter">Status filter</label>
+          <select id="statusFilter" onchange="handleFiltersChanged()">
+            <option value="all">All products</option>
+            <option value="clearance">Clearance only</option>
+            <option value="regular">Regular only</option>
+          </select>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-danger" id="markBtn" type="button" onclick="markSelected(true)" disabled>Mark selected as clearance</button>
+        <button class="btn btn-secondary" id="unmarkBtn" type="button" onclick="markSelected(false)" disabled>Remove clearance</button>
+        <button class="btn btn-primary" type="button" onclick="refreshProducts()">Refresh list</button>
+        <span class="hint">Tip: enter a compare-at price before marking products on clearance.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top-bar">
+        <span class="count" id="countLabel"></span>
+        <label class="checkbox-label">
+          <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+          Select all visible
+        </label>
+      </div>
+      <div id="loading" class="loading">Loading products...</div>
+      <div id="errorBox" aria-live="polite"></div>
+      <div id="productList"></div>
+    </div>
+  </div>
+
+  <script>
+    let products = [];
+    let selectedIds = new Set();
+
+    function setMessage(type, text) {
+      const box = document.getElementById('messageBox');
+      if (!text) {
+        box.innerHTML = '';
+        return;
+      }
+      box.innerHTML = `<div class="message message-${type}">${escapeHtml(text)}</div>`;
+    }
+
+    function setError(text) {
+      const errorBox = document.getElementById('errorBox');
+      if (!text) {
+        errorBox.innerHTML = '';
+        return;
+      }
+      errorBox.innerHTML = `<div class="message message-error">${escapeHtml(text)}</div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatCurrency(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) {
+        return '—';
+      }
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value));
+    }
+
+    function parseError(data, fallback) {
+      if (data && typeof data === 'object' && data.error) {
+        return data.error;
+      }
+      return fallback;
+    }
+
+    function getVisibleProducts() {
+      const searchTerm = document.getElementById('searchTerm').value.trim().toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+
+      return products.filter((product) => {
+        const matchesSearch = !searchTerm || [
+          product.title,
+          product.brand,
+          String(product.id),
+        ].filter(Boolean).some((value) => String(value).toLowerCase().includes(searchTerm));
+
+        const matchesStatus =
+          statusFilter === 'all' ||
+          (statusFilter === 'clearance' && product.is_clearance) ||
+          (statusFilter === 'regular' && !product.is_clearance);
+
+        return matchesSearch && matchesStatus;
+      });
+    }
+
+    function syncSelectAllCheckbox(visibleProducts) {
+      const selectAll = document.getElementById('selectAll');
+      if (visibleProducts.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        return;
+      }
+
+      const selectedVisibleCount = visibleProducts.filter((product) => selectedIds.has(String(product.id))).length;
+      selectAll.checked = selectedVisibleCount === visibleProducts.length;
+      selectAll.indeterminate = selectedVisibleCount > 0 && selectedVisibleCount < visibleProducts.length;
+    }
+
+    function updateButtonState(visibleProducts = getVisibleProducts()) {
+      const hasSelection = visibleProducts.some((product) => selectedIds.has(String(product.id)));
+      document.getElementById('markBtn').disabled = !hasSelection;
+      document.getElementById('unmarkBtn').disabled = !hasSelection;
+      syncSelectAllCheckbox(visibleProducts);
+    }
+
+    async function checkAuth() {
+      try {
+        const res = await fetch('/auth/me', { credentials: 'include' });
+        if (!res.ok) {
+          window.location.replace('/admin/login.html');
+          return false;
+        }
+        const user = await res.json();
+        document.getElementById('userEmail').textContent = user.email || user.name || '';
+        return true;
+      } catch {
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+    }
+
+    async function logout() {
+      await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.replace('/admin/login.html');
+    }
+
+    async function refreshProducts() {
+      const loading = document.getElementById('loading');
+      const list = document.getElementById('productList');
+
+      loading.style.display = 'block';
+      list.innerHTML = '';
+      setError('');
+      setMessage('', '');
+
+      try {
+        const res = await fetch('/api/clearance', { credentials: 'include' });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(parseError(data, 'Failed to load products.'));
+        }
+        products = Array.isArray(data) ? data : [];
+        renderProducts();
+      } catch (err) {
+        setError(err.message || 'Failed to load products.');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    function renderProducts() {
+      const list = document.getElementById('productList');
+      const visibleProducts = getVisibleProducts();
+      const clearanceCount = products.filter((product) => product.is_clearance).length;
+
+      document.getElementById('countLabel').innerHTML =
+        `<strong>${visibleProducts.length}</strong> shown of ${products.length} products - ${clearanceCount} on clearance`;
+
+      if (visibleProducts.length === 0) {
+        list.innerHTML = '<div class="empty">No products match your current filters.</div>';
+        updateButtonState(visibleProducts);
+        return;
+      }
+
+      const rows = visibleProducts.map((product) => `
+        <tr>
+          <td>
+            <input
+              type="checkbox"
+              value="${product.id}"
+              ${selectedIds.has(String(product.id)) ? 'checked' : ''}
+              onchange="toggleSelect('${product.id}')"
+              aria-label="Select product ${escapeHtml(product.title)}"
+            >
+          </td>
+          <td>
+            <div class="product-name">${escapeHtml(product.title)}</div>
+            <div class="product-meta">${escapeHtml(product.brand || 'Unbranded')}</div>
+            <div class="product-meta product-id">${escapeHtml(String(product.id))}</div>
+          </td>
+          <td>${formatCurrency(product.price)}</td>
+          <td>${product.is_clearance ? '<span class="clearance-badge">Clearance</span>' : '<span class="muted">Regular</span>'}</td>
+          <td>${product.compare_at_price ? formatCurrency(product.compare_at_price) : '<span class="muted">—</span>'}</td>
+          <td>${product.discount ? escapeHtml(product.discount) : '<span class="muted">—</span>'}</td>
+          <td>
+            <button
+              class="btn btn-secondary"
+              style="padding:0.4rem 0.7rem;font-size:0.8rem;"
+              type="button"
+              onclick="toggleOne('${product.id}', ${!product.is_clearance})"
+            >
+              ${product.is_clearance ? 'Remove' : 'Mark'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      list.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:44px"></th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Compare-at</th>
+                <th>Discount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+
+      updateButtonState(visibleProducts);
+    }
+
+    function handleFiltersChanged() {
+      renderProducts();
+    }
+
+    function toggleSelect(id) {
+      const normalizedId = String(id);
+      if (selectedIds.has(normalizedId)) {
+        selectedIds.delete(normalizedId);
+      } else {
+        selectedIds.add(normalizedId);
+      }
+      updateButtonState();
+    }
+
+    function toggleSelectAll() {
+      const checked = document.getElementById('selectAll').checked;
+      const visibleProducts = getVisibleProducts();
+
+      if (checked) {
+        visibleProducts.forEach((product) => selectedIds.add(String(product.id)));
+      } else {
+        visibleProducts.forEach((product) => selectedIds.delete(String(product.id)));
+      }
+
+      renderProducts();
+    }
+
+    function getCompareAtPrice() {
+      const value = parseFloat(document.getElementById('compareAtPrice').value);
+      return Number.isFinite(value) && value > 0 ? value : null;
+    }
+
+    async function markSelected(isClearance) {
+      const compareAtPrice = getCompareAtPrice();
+      const visibleIds = getVisibleProducts()
+        .map((product) => String(product.id))
+        .filter((id) => selectedIds.has(id));
+
+      setMessage('', '');
+
+      if (visibleIds.length === 0) {
+        setMessage('error', 'Select at least one visible product first.');
+        return;
+      }
+
+      if (isClearance && compareAtPrice === null) {
+        setMessage('error', 'Enter a valid compare-at price before marking items as clearance.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/clearance/bulk-clearance', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            product_ids: visibleIds,
+            is_clearance: isClearance,
+            compare_at_price: isClearance ? compareAtPrice : undefined,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(parseError(data, 'Bulk update failed.'));
+        }
+
+        setMessage('success', `Updated ${data.updated} product${data.updated === 1 ? '' : 's'}.`);
+        visibleIds.forEach((id) => selectedIds.delete(id));
+        await refreshProducts();
+      } catch (err) {
+        setMessage('error', err.message || 'Bulk update failed.');
+      }
+    }
+
+    async function toggleOne(id, isClearance) {
+      const compareAtPrice = getCompareAtPrice();
+
+      setMessage('', '');
+
+      if (isClearance && compareAtPrice === null) {
+        setMessage('error', 'Enter a valid compare-at price before marking an item as clearance.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/clearance/${id}/clearance`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            is_clearance: isClearance,
+            compare_at_price: isClearance ? compareAtPrice : undefined,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(parseError(data, 'Update failed.'));
+        }
+
+        setMessage('success', `${data.title || 'Product'} updated successfully.`);
+        selectedIds.delete(String(id));
+        await refreshProducts();
+      } catch (err) {
+        setMessage('error', err.message || 'Update failed.');
+      }
+    }
+
+    (async () => {
+      if (await checkAuth()) {
+        await refreshProducts();
+      }
+    })();
+  </script>
+</body>
+</html>
