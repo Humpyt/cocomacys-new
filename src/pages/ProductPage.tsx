@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, ChevronRight, Heart, Play } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ProductCarousel } from '../components/ProductCarousel';
+import { useCart } from '../context/CartContext';
 import {
   api,
   type ApiProductRecord,
@@ -111,6 +112,7 @@ export function ProductPage() {
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [activeImage, setActiveImage] = useState(0);
+  const { addItem, openDrawer } = useCart();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -330,8 +332,18 @@ export function ProductPage() {
 
             {/* Action Buttons */}
             <div className="flex gap-4 mb-4">
-              <button className="flex-1 bg-orange-600 text-white font-bold py-3.5 rounded-sm hover:bg-orange-700 transition-colors">Add To Bag</button>
-              <button className="flex-1 bg-white text-black border border-black font-bold py-3.5 rounded-sm hover:bg-gray-50 transition-colors">Buy Now</button>
+              <button
+                className="flex-1 bg-orange-600 text-white font-bold py-3.5 rounded-sm hover:bg-orange-700 transition-colors"
+                onClick={() => { addItem(Number(product.id)); openDrawer(); }}
+              >
+                Add To Bag
+              </button>
+              <button
+                className="flex-1 bg-white text-black border border-black font-bold py-3.5 rounded-sm hover:bg-gray-50 transition-colors"
+                onClick={() => { addItem(Number(product.id)); openDrawer(); }}
+              >
+                Buy Now
+              </button>
             </div>
             <div className="text-center mb-8">
               <span className="text-xs underline cursor-pointer text-gray-600">Add to registry</span>
