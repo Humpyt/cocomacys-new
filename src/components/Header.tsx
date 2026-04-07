@@ -1,8 +1,28 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, Gift, ShoppingBag, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 
 export function Header() {
+  const { customer, logout } = useCustomerAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    setDropdownOpen(false);
+    await logout();
+  };
+
   return (
     <header className="border-b border-gray-200 font-sans">
       {/* Top Bar */}
@@ -40,7 +60,49 @@ export function Header() {
         <div className="flex items-center space-x-6 flex-1 justify-end text-sm">
           <div className="hidden lg:flex items-center space-x-2">
             <span className="text-gray-600 text-xs text-right leading-tight">See more of<br/>what you love</span>
-            <button className="bg-black text-white px-4 py-1.5 rounded font-bold">Sign In</button>
+            {customer ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="bg-black text-white px-4 py-1.5 rounded font-bold flex items-center gap-2"
+                >
+                  <span>{customer.name?.[0]?.toUpperCase() || customer.email[0].toUpperCase()}</span>
+                  <span>{customer.name?.split(' ')[0] || 'Account'}</span>
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="font-bold text-sm truncate">{customer.name || 'My Account'}</p>
+                      <p className="text-xs text-gray-500 truncate">{customer.email}</p>
+                    </div>
+                    <Link
+                      to="/customer/account"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm hover:bg-gray-50 font-medium"
+                    >
+                      Account
+                    </Link>
+                    <Link
+                      to="/customer/orders"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm hover:bg-gray-50"
+                    >
+                      Orders
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-600"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/customer/login" className="bg-black text-white px-4 py-1.5 rounded font-bold">
+                Sign In
+              </Link>
+            )}
           </div>
           <div className="hidden lg:flex items-center space-x-1 cursor-pointer">
             <Gift size={20} />

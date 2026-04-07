@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+import { CustomerAuthProvider } from './context/CustomerAuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Home } from './pages/Home';
@@ -8,23 +10,111 @@ import { Women } from './pages/Women';
 import { Men } from './pages/Men';
 import { ProductPage } from './pages/ProductPage';
 import { Contact } from './pages/Contact';
+import { Cart } from './pages/Cart';
+import { Checkout } from './pages/Checkout';
+// Admin imports
+import { RequireAuth } from './components/admin/RequireAuth';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { Login } from './pages/admin/Login';
+import { Dashboard } from './pages/admin/Dashboard';
+import { Products } from './pages/admin/Products';
+import { ProductForm } from './pages/admin/ProductForm';
+import { HomepageSections } from './pages/admin/HomepageSections';
+import { Orders } from './pages/admin/Orders';
+// Customer auth imports
+import { Login as CustomerLogin } from './pages/customer/Login';
+import { Register as CustomerRegister } from './pages/customer/Register';
+import { Account as CustomerAccount } from './pages/customer/Account';
+import { CustomerOrders } from './pages/customer/Orders';
 
 export default function App() {
   return (
-    <CartProvider>
-      <Router>
-        <div className="min-h-screen bg-white">
-          <Header />
+    <AuthProvider>
+      <CustomerAuthProvider>
+        <CartProvider>
+          <Router>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/women" element={<Women />} />
-            <Route path="/men" element={<Men />} />
-            <Route path="/product" element={<ProductPage />} />
-            <Route path="/contact" element={<Contact />} />
+            {/* Storefront */}
+            <Route path="/" element={<><Header /><Home /><Footer /></>} />
+            <Route path="/women" element={<><Header /><Women /><Footer /></>} />
+            <Route path="/men" element={<><Header /><Men /><Footer /></>} />
+            <Route path="/product" element={<><Header /><ProductPage /><Footer /></>} />
+            <Route path="/contact" element={<><Header /><Contact /><Footer /></>} />
+            <Route path="/cart" element={<><Header /><Cart /><Footer /></>} />
+            <Route path="/checkout" element={<><Header /><Checkout /><Footer /></>} />
+
+            {/* Customer auth routes */}
+            <Route path="/customer/login" element={<CustomerLogin />} />
+            <Route path="/customer/register" element={<CustomerRegister />} />
+            <Route path="/customer/account" element={<><Header /><CustomerAccount /><Footer /></>} />
+            <Route path="/customer/orders" element={<><Header /><CustomerOrders /><Footer /></>} />
+
+            {/* Admin routes */}
+            <Route path="/admin/login" element={<Login />} />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Dashboard />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Products />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/products/new"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <ProductForm />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/products/:id/edit"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <ProductForm />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/homepage-sections"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <HomepageSections />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/orders"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Orders />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
           </Routes>
-          <Footer />
-        </div>
-      </Router>
-    </CartProvider>
+        </Router>
+        </CartProvider>
+      </CustomerAuthProvider>
+    </AuthProvider>
   );
 }
