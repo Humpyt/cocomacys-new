@@ -88,8 +88,8 @@ export function Home() {
         // Women's picks — shuffled cross-section of women's subcategories
         const womensAll = withImages.filter(p => {
           const cid = p.collection_id;
-          return cid === COLLECTION_IDS.women.id ||
-            Object.values(COLLECTION_IDS.women.subcategories).includes(cid as typeof COLLECTION_IDS.women.subcategories[keyof typeof COLLECTION_IDS.women.subcategories]);
+          return (p.category?.startsWith('women_') ||
+            Object.values(COLLECTION_IDS.women.subcategories).includes(cid as typeof COLLECTION_IDS.women.subcategories[keyof typeof COLLECTION_IDS.women.subcategories]));
         });
         setWomensPicks(womensAll.sort(() => Math.random() - 0.5).slice(0, 8));
 
