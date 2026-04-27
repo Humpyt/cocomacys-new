@@ -96,7 +96,7 @@ export function ImageUploader({ value = [], onChange, maxImages = 10 }: ImageUpl
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute top-1 right-1 w-6 h-6 bg-black bg-opacity-60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="text-white" size={12} />
               </button>

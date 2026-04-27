@@ -132,7 +132,7 @@ export function Men() {
             alt="Men's Fashion"
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+          <div className="absolute inset-0 bg-black/30"></div>
           <div className="relative z-10 p-8 md:p-16 max-w-2xl text-white">
             <h1 className="text-5xl md:text-7xl font-serif font-bold mb-4">{pageTitle}</h1>
             <p className="text-xl md:text-2xl mb-8">

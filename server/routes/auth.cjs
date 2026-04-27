@@ -3,12 +3,11 @@ const router = express.Router();
 const pool = require('../db.cjs');
 const passport = require('passport');
 
-// Lazy-load passport configuration only when needed
-let passportConfigured = false;
+// Configure passport immediately so deserializeUser is registered
+// before passport.session() middleware runs on any request
+configurePassport();
 
 function configurePassport() {
-  if (passportConfigured) return;
-  passportConfigured = true;
 
   const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -51,8 +50,13 @@ function configurePassport() {
   passport.deserializeUser(async (id, done) => {
     try {
       const result = await pool.query('SELECT * FROM admin_users WHERE id = $1', [id]);
-      done(null, result.rows[0] || null);
+      if (!result.rows[0]) {
+        console.warn(`Deserialize: no admin_user found for id=${id}, session may be stale`);
+        return done(null, null);
+      }
+      done(null, result.rows[0]);
     } catch (error) {
+      console.error('Deserialize: database error looking up admin_user:', error.message);
       done(error, null);
     }
   });

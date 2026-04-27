@@ -74,6 +74,56 @@ export interface HomepageSection {
   productIds: number[];
 }
 
+export interface AdminOrder {
+  id: number;
+  cart_id: number;
+  customer_id: number;
+  email: string;
+  shipping_address: Record<string, unknown> | null;
+  billing_address: Record<string, unknown> | null;
+  shipping_method: Record<string, unknown> | null;
+  subtotal: string;
+  tax: string;
+  total: string;
+  status: string;
+  payment_status: string;
+  items: Array<{
+    id: number;
+    product_id: number;
+    quantity: number;
+    unit_price: string;
+    name: string;
+    brand: string | null;
+    images: string[];
+  }>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ClearanceItem {
+  id: number;
+  title: string;
+  brand: string | null;
+  price: number;
+  is_clearance: boolean;
+  compare_at_price: number | null;
+  discount: string | null;
+}
+
+export interface ImportResult {
+  inserted: number;
+  updated: number;
+  skipped: number;
+  errors: string[];
+}
+
+export interface ImportPreview {
+  preview: true;
+  columns: string[];
+  rows: Record<string, string>[];
+  totalRows: number;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -163,8 +213,8 @@ export function formatCurrency(amount: number, currencyCode = 'UGX'): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currencyCode,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount).replace('UGX', 'USh');
 }
 
@@ -267,6 +317,24 @@ export const api = {
     get: async (id: string): Promise<ApiCollectionRecord> => {
       return apiFetch<ApiCollectionRecord>(`/collections/${id}`);
     },
+
+    create: async (data: { title: string; handle?: string; parent_id?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
+      return apiFetch<ApiCollectionRecord>('/collections', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    update: async (id: string, data: { title?: string; handle?: string; parent_id?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
+      return apiFetch<ApiCollectionRecord>(`/collections/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+
+    delete: async (id: string): Promise<void> => {
+      await apiFetch(`/collections/${id}`, { method: 'DELETE' });
+    },
   },
 
   upload: {
@@ -295,6 +363,44 @@ export const api = {
     },
   },
 
+  orders: {
+    admin: async (params: { status?: string; limit?: number; offset?: number } = {}): Promise<{ orders: AdminOrder[]; total: number }> => {
+      const searchParams = new URLSearchParams();
+      if (params.status) searchParams.set('status', params.status);
+      if (params.limit) searchParams.set('limit', String(params.limit));
+      if (params.offset) searchParams.set('offset', String(params.offset));
+      const query = searchParams.toString();
+      return apiFetch<{ orders: AdminOrder[]; total: number }>(`/orders/admin${query ? `?${query}` : ''}`);
+    },
+
+    updateStatus: async (id: number, status: string): Promise<void> => {
+      await apiFetch(`/orders/${id}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+    },
+  },
+
+  clearance: {
+    list: async (): Promise<ClearanceItem[]> => {
+      return apiFetch<ClearanceItem[]>('/clearance');
+    },
+
+    set: async (productId: number, is_clearance: boolean, compare_at_price?: number): Promise<ClearanceItem> => {
+      return apiFetch<ClearanceItem>(`/clearance/${productId}/clearance`, {
+        method: 'POST',
+        body: JSON.stringify({ is_clearance, compare_at_price }),
+      });
+    },
+
+    bulkSet: async (product_ids: number[], is_clearance: boolean, compare_at_price?: number): Promise<{ updated: number; products: ClearanceItem[] }> => {
+      return apiFetch<{ updated: number; products: ClearanceItem[] }>('/clearance/bulk-clearance', {
+        method: 'POST',
+        body: JSON.stringify({ product_ids, is_clearance, compare_at_price }),
+      });
+    },
+  },
+
   auth: {
     me: async (): Promise<unknown> => {
       const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
@@ -315,6 +421,40 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify({ productIds }),
       });
+    },
+    create: async (data: { key: string; title: string; productIds?: number[] }): Promise<HomepageSection> => {
+      return apiFetch<HomepageSection>('/homepage-sections', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    update: async (sectionKey: string, data: { title: string }): Promise<HomepageSection> => {
+      return apiFetch<HomepageSection>(`/homepage-sections/${sectionKey}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+    delete: async (sectionKey: string): Promise<void> => {
+      await apiFetch(`/homepage-sections/${sectionKey}`, { method: 'DELETE' });
+    },
+  },
+
+  import: {
+    upload: async (file: File, preview = false): Promise<ImportResult | ImportPreview> => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const query = preview ? '?preview=true' : '';
+      const res = await fetch(`${API_BASE}/import${query}`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+      if (!res.ok) throw new Error(`Import failed: ${res.status}`);
+      return res.json();
+    },
+
+    downloadTemplate: (): void => {
+      window.open(`${API_BASE}/import/template`, '_blank');
     },
   },
 };

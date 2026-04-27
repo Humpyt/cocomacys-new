@@ -3,18 +3,22 @@ import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { getImageSrc, handleImageFallback } from '../lib/images'
 
-function formatPrice(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(amount / 100);
+const CURRENCY_FORMAT = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'UGX',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+})
+
+function formatUGX(amount: number): string {
+  return CURRENCY_FORMAT.format(amount).replace('UGX', 'USh')
 }
 
-// Simplified shipping options (stored in cents)
+// Shipping options in UGX
 const SHIPPING_OPTIONS = [
   { id: 'standard', name: 'Standard Shipping', description: '5-7 business days', price: 0 },
-  { id: 'express', name: 'Express Shipping', description: '2-3 business days', price: 999 },
-  { id: 'overnight', name: 'Overnight Shipping', description: 'Next business day', price: 2499 },
+  { id: 'express', name: 'Express Shipping', description: '2-3 business days', price: 15000 },
+  { id: 'overnight', name: 'Overnight Shipping', description: 'Next business day', price: 35000 },
 ]
 
 export function Checkout() {
@@ -23,7 +27,7 @@ export function Checkout() {
 
   const [step, setStep] = useState<'address' | 'shipping' | 'payment' | 'confirmation'>('address')
   const [address, setAddress] = useState({
-    first_name: '', last_name: '', address_1: '', address_2: '',
+    first_name: '', last_name: '', address: '', address_2: '',
     city: '', state: '', postal_code: '', country: 'US', phone: '',
   })
   const [selectedShipping, setSelectedShipping] = useState(SHIPPING_OPTIONS[0])
@@ -32,13 +36,29 @@ export function Checkout() {
 
   const subtotal = Math.round(items.reduce((sum, item) => {
     return sum + ((item.unit_price || 0) * item.quantity)
-  }, 0) * 100)
+  }, 0))
   const selectedShippingOption = SHIPPING_OPTIONS.find(o => o.id === selectedShipping.id)!
   const total = subtotal + selectedShippingOption.price
 
   const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStep('shipping')
+    if (!cart) return
+    setProcessing(true)
+    try {
+      const res = await fetch(`/api/carts/${cart.id}/address`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipping_address: address }),
+      })
+      if (!res.ok) throw new Error('Failed to save address')
+      setStep('shipping')
+    } catch (err) {
+      alert('Failed to save address. Please try again.')
+      console.error(err)
+    } finally {
+      setProcessing(false)
+    }
   }
 
   const handleShippingSubmit = async (e: React.FormEvent) => {
@@ -122,8 +142,8 @@ export function Checkout() {
                       onChange={e => setAddress(a => ({ ...a, last_name: e.target.value }))}
                       className="border px-3 py-2" />
                   </div>
-                  <input required placeholder="Address" value={address.address_1}
-                    onChange={e => setAddress(a => ({ ...a, address_1: e.target.value }))}
+                  <input required placeholder="Address" value={address.address}
+                    onChange={e => setAddress(a => ({ ...a, address: e.target.value }))}
                     className="w-full border px-3 py-2" />
                   <input placeholder="Apartment, suite, etc. (optional)" value={address.address_2}
                     onChange={e => setAddress(a => ({ ...a, address_2: e.target.value }))}
@@ -172,7 +192,7 @@ export function Checkout() {
                         </div>
                       </div>
                       <span className="font-bold">
-                        {option.price === 0 ? 'FREE' : formatPrice(option.price)}
+                        {option.price === 0 ? 'FREE' : formatUGX(option.price)}
                       </span>
                     </label>
                   ))}
@@ -205,7 +225,7 @@ export function Checkout() {
                     disabled={processing}
                     className="w-full bg-black text-white py-3 font-bold mt-4 hover:bg-gray-800 disabled:bg-gray-400"
                   >
-                    {processing ? 'Placing Order...' : `Place Order - USh ${(total / 100).toFixed(2)}`}
+                    {processing ? 'Placing Order...' : `Place Order - ${formatUGX(total)}`}
                   </button>
                   <button type="button" onClick={() => setStep('shipping')} className="w-full py-2 text-sm underline mt-2">
                     Back to Shipping
@@ -234,7 +254,7 @@ export function Checkout() {
                         <p className="text-gray-500">Qty: {item.quantity}</p>
                       </div>
                       <span className="font-medium text-sm">
-                        USh {((item.unit_price || 0) * item.quantity).toFixed(2)}
+                        {formatUGX((item.unit_price || 0) * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -242,11 +262,11 @@ export function Checkout() {
                 <div className="border-t pt-3 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>USh {(subtotal / 100).toFixed(2)}</span>
+                    <span>{formatUGX(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Shipping</span>
-                    <span>{selectedShippingOption.price === 0 ? 'FREE' : formatPrice(selectedShippingOption.price)}</span>
+                    <span>{selectedShippingOption.price === 0 ? 'FREE' : formatUGX(selectedShippingOption.price)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Tax</span>
@@ -254,7 +274,7 @@ export function Checkout() {
                   </div>
                   <div className="border-t pt-2 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>USh {(total / 100).toFixed(2)}</span>
+                    <span>{formatUGX(total)}</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-3 text-center">

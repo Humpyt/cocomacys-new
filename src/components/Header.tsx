@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, Gift, ShoppingBag, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
+import { useCart } from '../context/CartContext';
 
 export function Header() {
   const { customer, logout } = useCustomerAuth();
+  const { itemCount, openDrawer } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -108,9 +110,13 @@ export function Header() {
             <Gift size={20} />
             <span className="font-medium">Registry</span>
           </div>
-          <div className="cursor-pointer relative">
+          <div className="cursor-pointer relative" onClick={openDrawer}>
             <ShoppingBag size={24} />
-            <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                {itemCount}
+              </span>
+            )}
           </div>
         </div>
       </div>

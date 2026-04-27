@@ -113,6 +113,8 @@ export function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [activeImage, setActiveImage] = useState(0);
   const { addItem, openDrawer } = useCart();
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [cartError, setCartError] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -254,8 +256,8 @@ export function ProductPage() {
 
             <div className="flex items-center gap-1 mb-6 text-sm">
               <StarRating rating={rating} size={14} />
-              <span className="font-bold ml-1">{rating.toFixed(1)}</span>
-              <span className="text-gray-500 underline cursor-pointer">({(product.reviews ?? 0).toLocaleString()})</span>
+              {rating > 0 && <span className="font-bold ml-1">{rating.toFixed(1)}</span>}
+              {rating > 0 && <span className="text-gray-500 underline cursor-pointer">({(product.reviews ?? 0).toLocaleString()})</span>}
             </div>
 
             {discount && (
@@ -330,17 +332,48 @@ export function ProductPage() {
               </div>
             )}
 
+            {/* Cart error feedback */}
+            {cartError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded">
+                {cartError}
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex gap-4 mb-4">
               <button
-                className="flex-1 bg-orange-600 text-white font-bold py-3.5 rounded-sm hover:bg-orange-700 transition-colors"
-                onClick={() => { addItem(Number(product.id)); openDrawer(); }}
+                className="flex-1 bg-orange-600 text-white font-bold py-3.5 rounded-sm hover:bg-orange-700 transition-colors disabled:opacity-50"
+                disabled={addingToCart}
+                onClick={async () => {
+                  setAddingToCart(true);
+                  setCartError(null);
+                  try {
+                    await addItem(Number(product.id));
+                    openDrawer();
+                  } catch (err) {
+                    setCartError('Could not add to bag. Please try again.');
+                  } finally {
+                    setAddingToCart(false);
+                  }
+                }}
               >
-                Add To Bag
+                {addingToCart ? 'Adding...' : 'Add To Bag'}
               </button>
               <button
-                className="flex-1 bg-white text-black border border-black font-bold py-3.5 rounded-sm hover:bg-gray-50 transition-colors"
-                onClick={() => { addItem(Number(product.id)); openDrawer(); }}
+                className="flex-1 bg-white text-black border border-black font-bold py-3.5 rounded-sm hover:bg-gray-50 transition-colors disabled:opacity-50"
+                disabled={addingToCart}
+                onClick={async () => {
+                  setAddingToCart(true);
+                  setCartError(null);
+                  try {
+                    await addItem(Number(product.id));
+                    openDrawer();
+                  } catch (err) {
+                    setCartError('Could not add to bag. Please try again.');
+                  } finally {
+                    setAddingToCart(false);
+                  }
+                }}
               >
                 Buy Now
               </button>

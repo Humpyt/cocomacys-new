@@ -66,8 +66,8 @@ export function ProductForm() {
             brand: p.brand || '',
             description: p.description || '',
             details: p.details || '',
-            price: String(p.price || ''),
-            original_price: p.original_price != null ? String(p.original_price) : '',
+            price: p.price != null ? String(Number(p.price)) : '',
+            original_price: p.original_price != null ? String(Number(p.original_price)) : '',
             discount: p.discount || '',
             promo: p.promo || '',
             category: p.category || '',
@@ -77,8 +77,8 @@ export function ProductForm() {
             sizes: (p.sizes || []).join(', '),
             types: (p.types || []).join(', '),
             features: (p.features || []).join(', '),
-            rating: String(p.rating || '0'),
-            reviews: String(p.reviews || '0'),
+            rating: p.rating != null ? String(Number(p.rating)) : '0',
+            reviews: p.reviews != null ? String(p.reviews) : '0',
           });
         })
         .finally(() => setLoading(false));

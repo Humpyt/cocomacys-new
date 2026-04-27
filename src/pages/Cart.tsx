@@ -4,6 +4,15 @@ import { Minus, Plus, ArrowLeft } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { getImageSrc, handleImageFallback } from '../lib/images'
 
+function formatUGX(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'UGX',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount).replace('UGX', 'USh');
+}
+
 export function Cart() {
   const { cart, updateItem, removeItem, loading } = useCart()
   const items = cart?.items ?? []
@@ -88,13 +97,13 @@ export function Cart() {
                       {/* Price */}
                       <div className="lg:col-span-2 lg:text-center flex justify-between lg:block">
                         <span className="font-bold lg:hidden">Price:</span>
-                        <span className="font-medium">USh {(item.unit_price || 0).toFixed(2)}</span>
+                        <span className="font-medium">{formatUGX(item.unit_price || 0)}</span>
                       </div>
 
                       {/* Total */}
                       <div className="lg:col-span-2 lg:text-right flex justify-between lg:block">
                         <span className="font-bold lg:hidden">Total:</span>
-                        <span className="font-bold">USh {itemTotal.toFixed(2)}</span>
+                        <span className="font-bold">{formatUGX(itemTotal)}</span>
                       </div>
                     </div>
                   )
@@ -113,7 +122,7 @@ export function Cart() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>USh {subtotal.toFixed(2)}</span>
+                    <span>{formatUGX(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Shipping</span>
@@ -125,7 +134,7 @@ export function Cart() {
                   </div>
                   <div className="border-t pt-3 flex justify-between font-bold text-lg">
                     <span>Estimated Total</span>
-                    <span>USh {subtotal.toFixed(2)}</span>
+                    <span>{formatUGX(subtotal)}</span>
                   </div>
                 </div>
 

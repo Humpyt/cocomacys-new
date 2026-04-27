@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { getImageSrc, handleImageFallback } from '../lib/images'
 
-function formatPrice(amount: number, currency: string = 'UGX'): string {
+function formatUGX(amount: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: currency.toUpperCase(),
+    currency: 'UGX',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount).replace('UGX', 'USh');
 }
 
@@ -22,7 +24,7 @@ export function CartDrawer() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-40 z-40"
+        className="fixed inset-0 bg-black/40 z-40"
         onClick={closeDrawer}
       />
 
@@ -69,7 +71,7 @@ export function CartDrawer() {
                       <p className="text-sm font-medium truncate">{item.name}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{item.brand}</p>
                       <p className="text-sm font-medium mt-1">
-                        USh {((item.unit_price || 0) * item.quantity).toFixed(2)}
+                        {formatUGX((item.unit_price || 0) * item.quantity)}
                       </p>
 
                       {/* Quantity controls */}
@@ -111,7 +113,7 @@ export function CartDrawer() {
             <div className="flex justify-between font-bold text-lg">
               <span>Subtotal</span>
               <span>
-                USh {((cart?.items ?? []).reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0)).toFixed(2)}
+                {formatUGX((cart?.items ?? []).reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0))}
               </span>
             </div>
             <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>

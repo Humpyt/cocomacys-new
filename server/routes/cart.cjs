@@ -3,7 +3,7 @@ const defaultPool = require('../db.cjs');
 
 function calculateOrderAmounts(items, shippingMethod) {
   const subtotal = Math.round(
-    items.reduce((sum, item) => sum + (Number(item.unit_price) * item.quantity), 0) * 100
+    items.reduce((sum, item) => sum + (Number(item.unit_price) * item.quantity), 0)
   );
   const shippingAmount = Number(shippingMethod?.price) || 0;
   const tax = Math.round(subtotal * 0.08);

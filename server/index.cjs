@@ -57,15 +57,6 @@ app.use(passport.session());
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Serve admin pages (legacy static HTML — only for specific exact paths)
-app.use('/admin/clearance', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin/clearance.html'));
-});
-
-app.use('/admin/login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin/login.html'));
-});
-
 // API Routes
 app.use('/auth', authRoutes);
 app.use('/api/products', productRoutes);

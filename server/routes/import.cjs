@@ -6,6 +6,7 @@ const path = require('path');
 const pool = require('../db.cjs');
 const requireAuth = require('../middleware/requireAuth.cjs');
 const csv = require('csv-parser');
+const XLSX = require('xlsx');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -40,27 +41,59 @@ async function copyImage(srcPath, gender, productName) {
   return `/uploads/${dirName}/${fileName}`;
 }
 
+// GET /api/import/template — download empty CSV template
+router.get('/template', requireAuth, (req, res) => {
+  const headers = 'product_name,price,brand,gender,category,short_description,long_description,color,size,image_paths';
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="import_template.csv"');
+  res.send(headers + '\n');
+});
+
 router.post('/', requireAuth, upload.single('file'), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No CSV file uploaded' });
+    return res.status(400).json({ error: 'No file uploaded' });
   }
 
   const results = [];
   const summary = { inserted: 0, updated: 0, skipped: 0, errors: [] };
 
-  const bufferStr = req.file.buffer.toString('utf-8');
+  const ext = path.extname(req.file.originalname).toLowerCase();
+  const isExcel = ext === '.xlsx' || ext === '.xls';
 
-  await new Promise((resolve, reject) => {
-    const stream = require('stream');
-    const s = new stream.Readable();
-    s.push(bufferStr);
-    s.push(null);
+  if (isExcel) {
+    try {
+      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      results.push(...jsonData);
+    } catch (err) {
+      return res.status(400).json({ error: `Failed to parse Excel file: ${err.message}` });
+    }
+  } else {
+    const bufferStr = req.file.buffer.toString('utf-8');
+    await new Promise((resolve, reject) => {
+      const stream = require('stream');
+      const s = new stream.Readable();
+      s.push(bufferStr);
+      s.push(null);
 
-    s.pipe(csv())
-      .on('data', (row) => results.push(row))
-      .on('end', resolve)
-      .on('error', reject);
-  });
+      s.pipe(csv())
+        .on('data', (row) => results.push(row))
+        .on('end', resolve)
+        .on('error', reject);
+    });
+  }
+
+  // Preview mode — return first 10 parsed rows without importing
+  if (req.query.preview === 'true') {
+    return res.json({
+      preview: true,
+      columns: Object.keys(results[0] || {}),
+      rows: results.slice(0, 10),
+      totalRows: results.length,
+    });
+  }
 
   for (const row of results) {
     try {
@@ -81,7 +114,7 @@ router.post('/', requireAuth, upload.single('file'), async (req, res) => {
 
       if (!name || isNaN(price)) {
         summary.skipped++;
-        summary.errors.push(`Row skipped: missing name or price — ${JSON.stringify(row).slice(0, 80)}`);
+        summary.errors.push(`Row skipped: missing name or price`);
         continue;
       }
 

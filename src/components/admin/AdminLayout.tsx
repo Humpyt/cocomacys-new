@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Home, ShoppingBag, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Home, ShoppingBag, LogOut, Layers, Tag, Upload } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface AdminLayoutProps {
@@ -10,8 +10,11 @@ interface AdminLayoutProps {
 const NAV_ITEMS = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/products', icon: Package, label: 'Products' },
-  { to: '/admin/homepage-sections', icon: Home, label: 'Homepage Sections' },
+  { to: '/admin/collections', icon: Layers, label: 'Collections' },
+  { to: '/admin/clearance', icon: Tag, label: 'Clearance' },
   { to: '/admin/orders', icon: ShoppingBag, label: 'Orders' },
+  { to: '/admin/homepage-sections', icon: Home, label: 'Homepage' },
+  { to: '/admin/import', icon: Upload, label: 'Import' },
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {

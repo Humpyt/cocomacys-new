@@ -12,6 +12,7 @@ import { ProductPage } from './pages/ProductPage';
 import { Contact } from './pages/Contact';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
+import { CartDrawer } from './components/CartDrawer';
 // Admin imports
 import { RequireAuth } from './components/admin/RequireAuth';
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -21,6 +22,10 @@ import { Products } from './pages/admin/Products';
 import { ProductForm } from './pages/admin/ProductForm';
 import { HomepageSections } from './pages/admin/HomepageSections';
 import { Orders } from './pages/admin/Orders';
+import { Collections } from './pages/admin/Collections';
+import { CollectionForm } from './pages/admin/CollectionForm';
+import { Clearance } from './pages/admin/Clearance';
+import { Import } from './pages/admin/Import';
 // Customer auth imports
 import { Login as CustomerLogin } from './pages/customer/Login';
 import { Register as CustomerRegister } from './pages/customer/Register';
@@ -111,7 +116,58 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route
+              path="/admin/collections"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Collections />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/collections/new"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <CollectionForm />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/collections/:id/edit"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <CollectionForm />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/clearance"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Clearance />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin/import"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Import />
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
           </Routes>
+        <CartDrawer />
         </Router>
         </CartProvider>
       </CustomerAuthProvider>

@@ -41,14 +41,16 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
           
           {promo && <div className="text-xs text-orange-600 mb-2">{promo}</div>}
           
-          <div className="flex items-center space-x-1 mb-2">
-            <div className="flex text-black">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={12} fill={i < Math.floor(rating) ? "currentColor" : "none"} className={i < Math.floor(rating) ? "text-black" : "text-gray-300"} />
-              ))}
+          {rating > 0 && (
+            <div className="flex items-center space-x-1 mb-2">
+              <div className="flex text-black">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={12} fill={i < Math.floor(rating) ? "currentColor" : "none"} className={i < Math.floor(rating) ? "text-black" : "text-gray-300"} />
+                ))}
+              </div>
+              <span className="text-xs text-gray-500">{rating} ({reviews})</span>
             </div>
-            <span className="text-xs text-gray-500">{rating} ({reviews})</span>
-          </div>
+          )}
           
           {colors && colors.length > 0 && (
             <div className="flex space-x-1 mt-1">

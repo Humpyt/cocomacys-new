@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react'
 
 interface CartItem {
   id: string;
@@ -55,48 +55,66 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null)
   const [loading, setLoading] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const initPromiseRef = useRef<Promise<void> | null>(null)
 
   const initCart = useCallback(async () => {
+    if (initPromiseRef.current) return initPromiseRef.current
+
     setLoading(true)
-    try {
-      const savedId = localStorage.getItem(CART_ID_KEY)
-      if (savedId) {
-        try {
-          const cartData = await apiFetch<Cart>(`/carts/${savedId}`)
-          setCart(cartData)
-          return
-        } catch {
-          localStorage.removeItem(CART_ID_KEY)
+    const promise = (async () => {
+      try {
+        const savedId = localStorage.getItem(CART_ID_KEY)
+        if (savedId) {
+          try {
+            const cartData = await apiFetch<Cart>(`/carts/${savedId}`)
+            setCart(cartData)
+            return
+          } catch {
+            localStorage.removeItem(CART_ID_KEY)
+          }
         }
+        const newCart = await apiFetch<Cart>('/carts', { method: 'POST' })
+        localStorage.setItem(CART_ID_KEY, newCart.id)
+        setCart({ ...newCart, items: [] })
+      } catch (err) {
+        console.error('Cart init error:', err)
+        throw err
+      } finally {
+        setLoading(false)
+        initPromiseRef.current = null
       }
-      // Create new cart
-      const newCart = await apiFetch<Cart>('/carts', { method: 'POST' })
-      localStorage.setItem(CART_ID_KEY, newCart.id)
-      setCart(newCart)
-    } catch (err) {
-      console.error('Cart init error:', err)
-    } finally {
-      setLoading(false)
-    }
+    })()
+
+    initPromiseRef.current = promise
+    return promise
   }, [])
 
   useEffect(() => { initCart() }, [initCart])
 
   const addItem = useCallback(async (productId: number, quantity = 1) => {
-    if (!cart) return
+    let currentCart = cart
+    if (!currentCart) {
+      await initCart()
+      // We need to get the cart from state after initCart — polling approach
+      const savedId = localStorage.getItem(CART_ID_KEY)
+      if (!savedId) throw new Error('Failed to initialize cart')
+      currentCart = await apiFetch<Cart>(`/carts/${savedId}`)
+      setCart(currentCart)
+    }
     setLoading(true)
     try {
-      const result = await apiFetch<{ cart: Cart; items: CartItem[] }>(`/carts/${cart.id}/items`, {
+      const result = await apiFetch<{ cart: Cart; items: CartItem[] }>(`/carts/${currentCart.id}/items`, {
         method: 'POST',
         body: JSON.stringify({ product_id: productId, quantity }),
       })
-      setCart({ ...cart, items: result.items })
+      setCart(prev => prev ? { ...prev, items: result.items } : null)
     } catch (err) {
       console.error('Add item error:', err)
+      throw err
     } finally {
       setLoading(false)
     }
-  }, [cart])
+  }, [cart, initCart])
 
   const updateItem = useCallback(async (itemId: string, quantity: number) => {
     if (!cart) return
@@ -131,7 +149,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [cart])
 
-  const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+  const itemCount = (cart?.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <CartContext.Provider value={{
