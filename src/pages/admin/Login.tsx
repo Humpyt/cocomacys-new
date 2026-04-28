@@ -13,7 +13,9 @@ export function Login() {
   }, [user, loading, navigate]);
 
   const handleSignIn = () => {
-    window.location.href = '/auth/google';
+    setTimeout(() => {
+      window.location.assign('/auth/google');
+    }, 0);
   };
 
   return (

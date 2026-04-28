@@ -16,7 +16,9 @@ export function Login() {
 
   const handleGoogleLogin = () => {
     setRedirecting(true);
-    window.location.href = '/auth/google?returnTo=/customer/account';
+    setTimeout(() => {
+      window.location.assign('/auth/google?returnTo=/customer/account');
+    }, 0);
   };
 
   return (
