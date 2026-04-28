@@ -8,7 +8,6 @@ import {
   api,
   type ApiProductRecord,
   formatCurrency,
-  getErrorMessage,
   getProductDiscountLabel,
   getProductImage,
   getProductOriginalPrice,
@@ -67,7 +66,6 @@ export function Home() {
   const [lovedProducts, setLovedProducts] = useState<ApiProductRecord[]>([]);
   const [lovedTab, setLovedTab] = useState<LovedTabKey>('dressy');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMenProducts = api.products.list({
@@ -102,7 +100,6 @@ export function Home() {
       })
       .catch(err => {
         console.error('Homepage data fetch error:', err);
-        setError(getErrorMessage(err, 'Failed to load homepage data.'));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -125,20 +122,6 @@ export function Home() {
 
   return (
     <main>
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 m-4 rounded">
-          <strong>Error loading products:</strong> {error}
-        </div>
-      )}
-
-      {!loading && mensProducts.length === 0 && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 m-4 rounded">
-          <strong>No products loaded.</strong> Check console (F12) for API errors.
-          <br />
-          <span className="text-sm">Men's: {mensProducts.length}</span>
-        </div>
-      )}
-
       <HeroSection />
 
       <CategoryStrip sections={STRIP_CATEGORIES} />

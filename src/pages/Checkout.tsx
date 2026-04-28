@@ -1,18 +1,8 @@
-import React, { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { getImageSrc, handleImageFallback } from '../lib/images'
-
-const CURRENCY_FORMAT = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'UGX',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-})
-
-function formatUGX(amount: number): string {
-  return CURRENCY_FORMAT.format(amount).replace('UGX', 'USh')
-}
+import { formatCurrency } from '../lib/api'
 
 // Shipping options in UGX
 const SHIPPING_OPTIONS = [
@@ -40,7 +30,7 @@ export function Checkout() {
   const selectedShippingOption = SHIPPING_OPTIONS.find(o => o.id === selectedShipping.id)!
   const total = subtotal + selectedShippingOption.price
 
-  const handleAddressSubmit = async (e: React.FormEvent) => {
+  const handleAddressSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!cart) return
     setProcessing(true)
@@ -61,7 +51,7 @@ export function Checkout() {
     }
   }
 
-  const handleShippingSubmit = async (e: React.FormEvent) => {
+  const handleShippingSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setStep('payment')
   }
@@ -192,7 +182,7 @@ export function Checkout() {
                         </div>
                       </div>
                       <span className="font-bold">
-                        {option.price === 0 ? 'FREE' : formatUGX(option.price)}
+                        {option.price === 0 ? 'FREE' : formatCurrency(option.price)}
                       </span>
                     </label>
                   ))}
@@ -225,7 +215,7 @@ export function Checkout() {
                     disabled={processing}
                     className="w-full bg-black text-white py-3 font-bold mt-4 hover:bg-gray-800 disabled:bg-gray-400"
                   >
-                    {processing ? 'Placing Order...' : `Place Order - ${formatUGX(total)}`}
+                    {processing ? 'Placing Order...' : `Place Order - ${formatCurrency(total)}`}
                   </button>
                   <button type="button" onClick={() => setStep('shipping')} className="w-full py-2 text-sm underline mt-2">
                     Back to Shipping
@@ -254,7 +244,7 @@ export function Checkout() {
                         <p className="text-gray-500">Qty: {item.quantity}</p>
                       </div>
                       <span className="font-medium text-sm">
-                        {formatUGX((item.unit_price || 0) * item.quantity)}
+                        {formatCurrency((item.unit_price || 0) * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -262,11 +252,11 @@ export function Checkout() {
                 <div className="border-t pt-3 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>{formatUGX(subtotal)}</span>
+                    <span>{formatCurrency(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Shipping</span>
-                    <span>{selectedShippingOption.price === 0 ? 'FREE' : formatUGX(selectedShippingOption.price)}</span>
+                    <span>{selectedShippingOption.price === 0 ? 'FREE' : formatCurrency(selectedShippingOption.price)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Tax</span>
@@ -274,7 +264,7 @@ export function Checkout() {
                   </div>
                   <div className="border-t pt-2 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>{formatUGX(total)}</span>
+                    <span>{formatCurrency(total)}</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-3 text-center">

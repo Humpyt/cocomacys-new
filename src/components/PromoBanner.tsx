@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface PromoBannerProps {
@@ -6,17 +5,19 @@ interface PromoBannerProps {
   title: string;
   subtitle?: string;
   buttonText: string;
+  to?: string;
   align?: 'left' | 'center' | 'right';
   textColor?: string;
   height?: string;
 }
 
-export function PromoBanner({ 
-  image, 
-  title, 
-  subtitle, 
-  buttonText, 
-  align = 'center', 
+export function PromoBanner({
+  image,
+  title,
+  subtitle,
+  buttonText,
+  to,
+  align = 'center',
   textColor = 'text-white',
   height = 'aspect-[21/9] md:aspect-[21/7]'
 }: PromoBannerProps) {
@@ -29,7 +30,7 @@ export function PromoBanner({
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 font-sans">
-      <Link to="/product" className={`relative w-full ${height} bg-gray-100 overflow-hidden group cursor-pointer block`}>
+      <Link to={to || '/product'} className={`relative w-full ${height} bg-gray-100 overflow-hidden group cursor-pointer block`}>
         <img 
           src={image} 
           alt={title} 

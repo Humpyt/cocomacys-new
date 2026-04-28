@@ -14,7 +14,6 @@ Full-stack e-commerce site ("Cocomacys") with a React + Vite + Tailwind CSS stor
 - **React Router 7** for client-side routing
 - **Tailwind CSS v4** (via `@tailwindcss/vite`) with Inter + Playfair Display fonts
 - **Lucide React** for icons
-- **Motion** for animations
 - **Vitest** + Testing Library for frontend tests
 
 ### Backend
@@ -41,8 +40,6 @@ npm run clean           # Remove dist/ directory
 
 ```bash
 node server/index.cjs                    # Start Express backend (port 3001)
-npx tsx server/scripts/seed-collections.cjs   # Seed default collections
-npx tsx server/scripts/import-csv-products.cjs # Import products from ecommerce_products_for_developer/ CSVs
 ```
 
 ### Running tests
@@ -53,15 +50,6 @@ npx vitest                        # Vitest watch mode
 node --test server/tests/flows.smoke.test.cjs   # Run backend smoke tests (Node test runner)
 ```
 
-### Database scripts (one-off utilities in server/scripts/)
-
-```bash
-node server/scripts/seed-collections.cjs        # Seed default collections
-node server/scripts/migrate-from-medusa.cjs     # Import legacy Medusa product data
-node server/scripts/fix-collection-ids.cjs      # Fix collection IDs after migration
-node server/scripts/import-csv-products.cjs     # Bulk import products + images from CSVs
-node server/scripts/import-women-products.cjs   # Import women's products specifically
-node server/scripts/import-men-ties-bowties.cjs # Import men's ties/bowties
 ```
 
 **Critical:** The Vite dev server proxies `/api`, `/auth`, and `/uploads` to the Express backend on port 3001 automatically — no CORS issues in development.
@@ -81,9 +69,8 @@ src/
 ├── lib/
 │   ├── api.ts               # API client with typed helpers for all endpoints
 │   ├── images.ts            # Image URL helpers
-│   ├── medusa.ts            # Medusa API types for legacy product integration
 │   ├── navigation.ts        # Nav config (desktop/mobile menus)
-│   └── subcategoryMap.ts    # Subcategory mappings + COLLECTION_IDS constants
+│   └── subcategoryMap.ts    # COLLECTION_IDS constants
 ├── pages/
 │   ├── Home.tsx             # Homepage with subcategory sections
 │   ├── Women.tsx            # Women's category (fetches ?category=women)
@@ -112,9 +99,6 @@ src/
 │   └── setup.ts            # Vitest setup (jest-dom matchers, cleanup)
 └── components/
     ├── CartDrawer.tsx          # Slide-out cart drawer
-    ├── CategoryGrid.tsx        # Category grid on homepage
-    ├── CategorySection.tsx     # Section wrapper (title + carousel) for homepage subcategories
-    ├── CategorySectionSkeleton.tsx # Loading skeleton for CategorySection
     ├── CategoryStrip.tsx       # Horizontal category link strip on homepage
     ├── Footer.tsx              # Site footer
     ├── Header.tsx              # Site header with auth-aware customer menu
@@ -151,18 +135,6 @@ server/
 │   ├── homepage-sections.cjs # Homepage section CRUD at /api/homepage-sections
 │   ├── upload.cjs           # Image upload at /api/upload
 │   └── import.cjs           # CSV import at /api/import
-├── scripts/                 # One-off utilities
-│   ├── seed-collections.cjs
-│   ├── fix-collection-ids.cjs
-│   ├── migrate-from-medusa.cjs
-│   ├── import-csv-products.cjs
-│   ├── import-women-products.cjs
-│   ├── import-men-ties-bowties.cjs
-│   ├── update-csv-collection-ids.cjs
-│   ├── check-images.cjs
-│   ├── fix-image-paths.cjs
-│   ├── fix-missing-images.cjs
-│   └── fix-quoted-image-paths.cjs
 └── tests/                   # Backend smoke tests
 cocomacys.sql                # Base schema (products, admin_users, session)
 ```
@@ -267,29 +239,10 @@ GEMINI_API_KEY=your_gemini_key
    psql -U postgres -d cocomacys -f server/migrations/003_create_customers.sql
    psql -U postgres -d cocomacys -f server/migrations/003_create_homepage_sections.sql
    ```
-2. **Seed collections:** `node server/scripts/seed-collections.cjs`
-3. **Google OAuth:** Create credentials at console.cloud.google.com, add callback URL
-4. **Environment:** Copy `.env.example` to `.env`, fill in ALL values (see Environment Variables section above)
-5. **Install:** `npm install`
-6. **Run:** Start both the backend (`node server/index.cjs`) and frontend (`npm run dev`) in separate terminals
-
-## Medusa Migration
-
-One-off scripts for migrating legacy Medusa-origin product data:
-```bash
-node server/scripts/migrate-from-medusa.cjs     # Import products from Medusa export
-node server/scripts/fix-collection-ids.cjs       # Repair collection IDs after migration
-```
-
-## CSV Product Import
-
-To import products and images from the `ecommerce_products_for_developer/` CSVs:
-```bash
-node server/scripts/import-csv-products.cjs
-node server/scripts/import-women-products.cjs
-node server/scripts/import-men-ties-bowties.cjs
-```
-These read `men_products.csv` / `women_products.csv`, copy images to `uploads/`, and insert/update the `products` table.
+2. **Google OAuth:** Create credentials at console.cloud.google.com, add callback URL
+3. **Environment:** Copy `.env.example` to `.env`, fill in ALL values (see Environment Variables section above)
+4. **Install:** `npm install`
+5. **Run:** Start both the backend (`node server/index.cjs`) and frontend (`npm run dev`) in separate terminals
 
 ## Admin Access
 

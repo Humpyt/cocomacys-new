@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, Gift, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, Gift, ShoppingBag, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useCart } from '../context/CartContext';

@@ -1,17 +1,8 @@
-import React from 'react'
 import { X, Plus, Minus, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { getImageSrc, handleImageFallback } from '../lib/images'
-
-function formatUGX(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'UGX',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount).replace('UGX', 'USh');
-}
+import { formatCurrency } from '../lib/api'
 
 export function CartDrawer() {
   const { cart, drawerOpen, closeDrawer, updateItem, removeItem, loading } = useCart()
@@ -71,7 +62,7 @@ export function CartDrawer() {
                       <p className="text-sm font-medium truncate">{item.name}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{item.brand}</p>
                       <p className="text-sm font-medium mt-1">
-                        {formatUGX((item.unit_price || 0) * item.quantity)}
+                        {formatCurrency((item.unit_price || 0) * item.quantity)}
                       </p>
 
                       {/* Quantity controls */}
@@ -113,7 +104,7 @@ export function CartDrawer() {
             <div className="flex justify-between font-bold text-lg">
               <span>Subtotal</span>
               <span>
-                {formatUGX((cart?.items ?? []).reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0))}
+                {formatCurrency((cart?.items ?? []).reduce((sum, item) => sum + ((item.unit_price || 0) * item.quantity), 0))}
               </span>
             </div>
             <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>
