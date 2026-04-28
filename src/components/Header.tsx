@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, Gift, ShoppingBag, Menu } from 'lucide-react';
+import { Search, MapPin, Gift, ShoppingBag, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useCart } from '../context/CartContext';
@@ -8,6 +8,7 @@ export function Header() {
   const { customer, logout } = useCustomerAuth();
   const { itemCount, openDrawer } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export function Header() {
       {/* Main Header */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-1">
-          <button className="lg:hidden"><Menu size={24} /></button>
+          <button className="lg:hidden" onClick={() => setMobileMenuOpen(true)}><Menu size={24} /></button>
           <Link to="/" className="flex items-center">
             <img src="/coco-logo.png" alt="Cocomacys" className="h-12 w-auto object-contain" />
           </Link>
@@ -135,6 +136,42 @@ export function Header() {
           <Link to="/contact" className="hover:underline">Contact</Link>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
+          <div className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-xl flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <span className="font-bold text-lg">Menu</span>
+              <button onClick={() => setMobileMenuOpen(false)}><X size={24} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-1">
+                <Link to="/women" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded">Women</Link>
+                <Link to="/men" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded">Men</Link>
+                <Link to="/women?category=shoes" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded">Shoes</Link>
+                <Link to="/women?category=bags" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded">Handbags</Link>
+                <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded">Contact</Link>
+              </div>
+              <hr className="my-4" />
+              {customer ? (
+                <div className="space-y-1">
+                  <div className="px-4 py-3 border-b">
+                    <p className="font-bold truncate">{customer.name || 'My Account'}</p>
+                    <p className="text-xs text-gray-500 truncate">{customer.email}</p>
+                  </div>
+                  <Link to="/customer/account" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 hover:bg-gray-100 rounded">Account</Link>
+                  <Link to="/customer/orders" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 hover:bg-gray-100 rounded">Orders</Link>
+                  <button onClick={() => { setMobileMenuOpen(false); logout(); }} className="w-full text-left px-4 py-3 text-gray-600 hover:bg-gray-100 rounded">Sign Out</button>
+                </div>
+              ) : (
+                <Link to="/customer/login" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center bg-black text-white px-4 py-3 rounded font-bold">Sign In</Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -70,30 +70,35 @@ export function Home() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api.products
-      .list({ limit: 200, order: 'created_at DESC' })
-      .then(({ products }) => {
-        const withImages = products.filter(p => p.images && p.images.length > 0);
+    const fetchMenProducts = api.products.list({
+      collection_id: COLLECTION_IDS.men.subcategories.shirts,
+      limit: 50,
+      order: 'created_at DESC',
+    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0));
 
-        // Men's shirts and shoes - shuffled for variety
-        const mensShirtsAndShoes = withImages.filter(p => {
-          const cid = p.collection_id;
-          return cid === COLLECTION_IDS.men.subcategories.shirts ||
-                 cid === COLLECTION_IDS.men.subcategories.shoes;
-        });
-        const shuffled = mensShirtsAndShoes.sort(() => Math.random() - 0.5);
+    const fetchMenShoes = api.products.list({
+      collection_id: COLLECTION_IDS.men.subcategories.shoes,
+      limit: 50,
+      order: 'created_at DESC',
+    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0));
 
-        setMensProducts(shuffled.slice(0, 8));
+    const fetchWomenPicks = api.products.list({
+      gender: 'women',
+      limit: 50,
+      order: 'created_at DESC',
+    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0));
 
-        // Women's picks — shuffled cross-section of women's subcategories
-        const womensAll = withImages.filter(p => {
-          const cid = p.collection_id;
-          return (p.category?.startsWith('women_') ||
-            Object.values(COLLECTION_IDS.women.subcategories).includes(cid as typeof COLLECTION_IDS.women.subcategories[keyof typeof COLLECTION_IDS.women.subcategories]));
-        });
-        setWomensPicks(womensAll.sort(() => Math.random() - 0.5).slice(0, 8));
+    const fetchDiscover = api.products.list({
+      limit: 100,
+      order: 'created_at DESC',
+    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0 && !isProductOnSale(p)).slice(0, 6));
 
-        setDiscoverProducts(withImages.filter(p => !isProductOnSale(p)).slice(0, 6));
+    Promise.all([fetchMenProducts, fetchMenShoes, fetchWomenPicks, fetchDiscover])
+      .then(([menShirts, menShoes, womenPicks, discover]) => {
+        const combinedMen = [...menShirts, ...menShoes].sort(() => Math.random() - 0.5);
+        setMensProducts(combinedMen.slice(0, 8));
+        setWomensPicks(womenPicks.sort(() => Math.random() - 0.5).slice(0, 8));
+        setDiscoverProducts(discover);
       })
       .catch(err => {
         console.error('Homepage data fetch error:', err);
@@ -214,13 +219,13 @@ export function Home() {
               <div className="w-32 h-20 bg-orange-600 rounded-md shadow-md mr-6 transform -rotate-6"></div>
               <div>
                 <h3 className="text-3xl font-serif font-bold italic mb-1">Enjoy 30% OFF</h3>
-                <p className="text-xl font-bold mb-2">on macys.com purchases today</p>
-                <p className="text-xs text-gray-600">when you open & use a Macy's Card. Discount in store varies. Subject to credit approval. <Link to="/contact" className="underline">Exclusions & details</Link></p>
+                <p className="text-xl font-bold mb-2">on your first order</p>
+                <p className="text-xs text-gray-600">Sign up and save on your first purchase. New customers only. <Link to="/contact" className="underline">Terms & details</Link></p>
               </div>
             </div>
             <div className="flex flex-col items-center">
-              <Link to="/contact" className="border border-black px-6 py-2 font-bold mb-2 hover:bg-gray-50">Check if I prequalify</Link>
-              <p className="text-xs text-gray-600">No risk to your credit score</p>
+              <Link to="/customer/register" className="border border-black px-6 py-2 font-bold mb-2 hover:bg-gray-50">Sign Up Now</Link>
+              <p className="text-xs text-gray-600">Free shipping on orders over USh 200,000</p>
             </div>
           </div>
         </div>

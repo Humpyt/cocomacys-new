@@ -28,18 +28,40 @@ Full-stack e-commerce site ("Cocomacys") with a React + Vite + Tailwind CSS stor
 
 ```bash
 npm install             # Install all dependencies
-npm run dev             # Start Vite dev server (port 3000)
-npm run server          # Start Express backend (port 3001)
-npm run dev:full        # Run both frontend + backend concurrently
-npm run build           # Build frontend for production
+npm run dev             # Start Vite dev server (port 3000) — proxies /api, /auth, /uploads to :3001
+npm run build           # Build frontend for production (to dist/)
 npm run lint            # TypeScript type checking (tsc --noEmit, not ESLint)
-npm test                # Run all tests (client + server)
-npm run test:client     # Run Vitest frontend tests
-npm run test:server     # Run Node test runner backend tests
-npm run db:seed:collections   # Seed default collections
-npm run db:migrate:medusa     # Import legacy Medusa product data
-npm run db:fix:collections    # Fix collection IDs after migration
-npm run db:import:csv         # Import products + images from ecommerce_products_for_developer CSV files
+npm run preview         # Preview production build locally
+npm run clean           # Remove dist/ directory
+```
+
+**AI Studio constraint:** `vite.config.ts` disables HMR when `DISABLE_HMR=true`. Do not modify the HMR logic — it prevents flickering during AI Studio agent edits.
+
+### Running the backend
+
+```bash
+node server/index.cjs                    # Start Express backend (port 3001)
+npx tsx server/scripts/seed-collections.cjs   # Seed default collections
+npx tsx server/scripts/import-csv-products.cjs # Import products from ecommerce_products_for_developer/ CSVs
+```
+
+### Running tests
+
+```bash
+npx vitest run                    # Run frontend tests (Vitest, uses vite.config.ts)
+npx vitest                        # Vitest watch mode
+node --test server/tests/flows.smoke.test.cjs   # Run backend smoke tests (Node test runner)
+```
+
+### Database scripts (one-off utilities in server/scripts/)
+
+```bash
+node server/scripts/seed-collections.cjs        # Seed default collections
+node server/scripts/migrate-from-medusa.cjs     # Import legacy Medusa product data
+node server/scripts/fix-collection-ids.cjs      # Fix collection IDs after migration
+node server/scripts/import-csv-products.cjs     # Bulk import products + images from CSVs
+node server/scripts/import-women-products.cjs   # Import women's products specifically
+node server/scripts/import-men-ties-bowties.cjs # Import men's ties/bowties
 ```
 
 **Critical:** The Vite dev server proxies `/api`, `/auth`, and `/uploads` to the Express backend on port 3001 automatically — no CORS issues in development.
@@ -59,8 +81,9 @@ src/
 ├── lib/
 │   ├── api.ts               # API client with typed helpers for all endpoints
 │   ├── images.ts            # Image URL helpers
+│   ├── medusa.ts            # Medusa API types for legacy product integration
 │   ├── navigation.ts        # Nav config (desktop/mobile menus)
-│   └── subcategoryMap.ts    # Subcategory mappings for homepage
+│   └── subcategoryMap.ts    # Subcategory mappings + COLLECTION_IDS constants
 ├── pages/
 │   ├── Home.tsx             # Homepage with subcategory sections
 │   ├── Women.tsx            # Women's category (fetches ?category=women)
@@ -85,18 +108,24 @@ src/
 │       ├── Register.tsx     # Customer Google OAuth register
 │       ├── Account.tsx      # Customer account overview
 │       └── Orders.tsx       # Customer order history
+├── test/
+│   └── setup.ts            # Vitest setup (jest-dom matchers, cleanup)
 └── components/
-    ├── CartDrawer.tsx       # Slide-out cart drawer
-    ├── CategoryGrid.tsx     # Category grid on homepage
-    ├── Footer.tsx           # Site footer
-    ├── Header.tsx           # Site header with auth-aware customer menu
-    ├── HeroSection.tsx      # Hero banner
-    ├── ProductCard.tsx      # Product card
-    ├── ProductCarousel.tsx  # Product carousel (supports grid mode)
-    ├── PromoBanner.tsx      # Promo banner
+    ├── CartDrawer.tsx          # Slide-out cart drawer
+    ├── CategoryGrid.tsx        # Category grid on homepage
+    ├── CategorySection.tsx     # Section wrapper (title + carousel) for homepage subcategories
+    ├── CategorySectionSkeleton.tsx # Loading skeleton for CategorySection
+    ├── CategoryStrip.tsx       # Horizontal category link strip on homepage
+    ├── Footer.tsx              # Site footer
+    ├── Header.tsx              # Site header with auth-aware customer menu
+    ├── HeroSection.tsx         # Hero banner
+    ├── ProductCard.tsx         # Product card
+    ├── ProductCarousel.tsx     # Product carousel (supports grid mode)
+    ├── PromoBanner.tsx         # Promo banner
     └── admin/
-        ├── AdminLayout.tsx  # Sidebar layout for admin pages
-        └── RequireAuth.tsx  # Auth guard for protected routes
+        ├── AdminLayout.tsx     # Sidebar layout for admin pages
+        ├── ImageUploader.tsx   # Image upload with preview
+        └── RequireAuth.tsx     # Auth guard for protected routes
 ```
 
 ### Backend Structure
@@ -116,8 +145,8 @@ server/
 │   ├── auth.cjs             # Google OAuth + session management
 │   ├── products.cjs         # Full CRUD at /api/products
 │   ├── collections.cjs      # Collections API at /api/collections
-│   ├── cart.cjs             # Cart API at /api/carts (singular file name)
-│   ├── clearance.cjs        # Clearance API at /api/clearance (Admin only)
+│   ├── cart.cjs             # Cart API at /api/carts (exports factory: createCartRouter({ pool }))
+│   ├── clearance.cjs        # Clearance API at /api/clearance (exports factory: createClearanceRouter({ pool }))
 │   ├── orders.cjs           # Orders API at /api/orders (customer + admin)
 │   ├── homepage-sections.cjs # Homepage section CRUD at /api/homepage-sections
 │   ├── upload.cjs           # Image upload at /api/upload
@@ -125,9 +154,28 @@ server/
 ├── scripts/                 # One-off utilities
 │   ├── seed-collections.cjs
 │   ├── fix-collection-ids.cjs
-│   └── migrate-from-medusa.cjs
+│   ├── migrate-from-medusa.cjs
+│   ├── import-csv-products.cjs
+│   ├── import-women-products.cjs
+│   ├── import-men-ties-bowties.cjs
+│   ├── update-csv-collection-ids.cjs
+│   ├── check-images.cjs
+│   ├── fix-image-paths.cjs
+│   ├── fix-missing-images.cjs
+│   └── fix-quoted-image-paths.cjs
 └── tests/                   # Backend smoke tests
 cocomacys.sql                # Base schema (products, admin_users, session)
+```
+
+**Key patterns:**
+- `cart.cjs` and `clearance.cjs` export **factory functions** (`createCartRouter({ pool })`, `createClearanceRouter({ pool })`) that accept a database pool for testability. All other route files import `pool` directly from `../db.cjs`.
+- In `server/index.cjs`, `clearanceRoutes` and `homepageSectionsRoutes` are mounted with `requireAuth` middleware at the router level, making ALL their endpoints admin-only.
+- The server serves the Vite-built `dist/` directory as a fallback for production (SPA client-side routing).
+
+### Path Alias
+The `@` alias maps to the project root (configured in both `vite.config.ts` and `tsconfig.json`):
+```ts
+import { api } from '@/src/lib/api';
 ```
 
 ### API Endpoints
@@ -187,9 +235,10 @@ cocomacys.sql                # Base schema (products, admin_users, session)
 
 ## Environment Variables
 
+The `.env` file at the project root is read by both the Vite dev server (`vite.config.ts` uses `loadEnv`) and the Express backend (`dotenv` in `server/db.cjs`). The `.env.example` only lists `GEMINI_API_KEY` and `APP_URL` (AI Studio template), but the backend requires additional variables.
+
+**Required for the backend (`server/db.cjs`, `server/index.cjs`):**
 ```bash
-# Backend (.env)
-PORT=3001
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=cocomacys
@@ -200,6 +249,12 @@ GOOGLE_CLIENT_SECRET=your_client_secret
 GOOGLE_CALLBACK_URL=http://localhost:3001/auth/google/callback
 SESSION_SECRET=change-this-in-production
 FRONTEND_URL=http://localhost:3000
+PORT=3001
+```
+
+**Optional for AI features (used by `vite.config.ts` define):**
+```bash
+GEMINI_API_KEY=your_gemini_key
 ```
 
 ## Setup Steps
@@ -212,25 +267,29 @@ FRONTEND_URL=http://localhost:3000
    psql -U postgres -d cocomacys -f server/migrations/003_create_customers.sql
    psql -U postgres -d cocomacys -f server/migrations/003_create_homepage_sections.sql
    ```
-2. **Seed collections:** `npm run db:seed:collections`
+2. **Seed collections:** `node server/scripts/seed-collections.cjs`
 3. **Google OAuth:** Create credentials at console.cloud.google.com, add callback URL
-4. **Environment:** Copy `.env.example` to `.env`, fill in values
+4. **Environment:** Copy `.env.example` to `.env`, fill in ALL values (see Environment Variables section above)
 5. **Install:** `npm install`
-6. **Run:** `npm run dev:full` (starts both servers)
+6. **Run:** Start both the backend (`node server/index.cjs`) and frontend (`npm run dev`) in separate terminals
 
 ## Medusa Migration
 
-The codebase includes one-off scripts for migrating legacy Medusa-origin product data:
-- `npm run db:migrate:medusa` — imports products from Medusa export
-- `npm run db:fix:collections` — repairs collection IDs after import
+One-off scripts for migrating legacy Medusa-origin product data:
+```bash
+node server/scripts/migrate-from-medusa.cjs     # Import products from Medusa export
+node server/scripts/fix-collection-ids.cjs       # Repair collection IDs after migration
+```
 
 ## CSV Product Import
 
 To import products and images from the `ecommerce_products_for_developer/` CSVs:
 ```bash
-npm run db:import:csv
+node server/scripts/import-csv-products.cjs
+node server/scripts/import-women-products.cjs
+node server/scripts/import-men-ties-bowties.cjs
 ```
-This reads `men_products.csv` and `women_products.csv`, copies images to `uploads/`, and inserts/updates the `products` table.
+These read `men_products.csv` / `women_products.csv`, copy images to `uploads/`, and insert/update the `products` table.
 
 ## Admin Access
 
@@ -239,3 +298,48 @@ Visit `http://localhost:3000/admin/login` → Click "Continue with Google" → R
 ## Image Uploads
 
 Admin can upload images via the product form. Files are stored in `/uploads/` directory (gitignored) and served at `/uploads/:filename`.
+
+## Production Deployment
+
+The site is deployed on a Hostinger VPS (`72.60.83.198`) at **https://cocofashionbrands.com**. The full deployment guide is in `cocowebsiterun.md`.
+
+### Deployment Architecture
+
+```
+User → Nginx (port 80/443) → Express (port 4000 via PM2) → PostgreSQL (localhost)
+                            ↘ dist/ (static SPA files)
+```
+
+- **PM2** manages the Express process (`deploy/hostinger/pm2/ecosystem.config.cjs`)
+- **Nginx** reverse-proxies `/api`, `/auth`, `/uploads` to Express and serves `dist/` for all other routes
+- **PostgreSQL** runs locally on the VPS (not Supabase/cloud)
+- **SSL** via Certbot (Let's Encrypt)
+
+### Key Production Differences
+
+| Aspect | Development | Production |
+|--------|-------------|------------|
+| Server port | 3001 | 4000 |
+| Frontend serving | Vite dev server | Express serves `dist/` |
+| `NODE_ENV` | (unset) | `production` |
+| `cookie.secure` | false | true |
+| Frontend URL | `http://localhost:3000` | `https://cocofashionbrands.com` |
+| Google callback | `http://localhost:3001/auth/google/callback` | `https://cocofashionbrands.com/auth/google/callback` |
+| `.env` location | Project root | `server/.env` on VPS |
+
+### Deploy directory structure
+```
+deploy/hostinger/
+├── README.md              # Quick deploy reference
+├── deploy.sh              # Automated deployment script
+├── pm2/
+│   └── ecosystem.config.cjs  # PM2 process config (fork mode, 400MB memory limit)
+└── nginx/
+    └── cocofashionbrands.com.conf  # Nginx site config
+```
+
+### Quick Deploy (after pushing to main)
+
+```bash
+ssh root@72.60.83.198 "bash /var/www/cocofashionbrands.com/current/deploy/hostinger/deploy.sh"
+```
