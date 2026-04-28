@@ -70,7 +70,7 @@ export function Footer() {
             <Link to="/contact" className="hover:underline">Return Policy</Link>
             <Link to="/contact" className="hover:underline">Accessibility</Link>
           </div>
-          <p>© 2026 Cocomacys. All rights reserved. A Coco's Fashion Brand.</p>
+          <p>© 2026 Coco's Fashion Brands. All rights reserved.</p>
         </div>
       </div>
     </footer>
