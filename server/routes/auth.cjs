@@ -85,6 +85,7 @@ function configurePassport() {
       newCustomer.rows[0]._type = 'customer';
       return done(null, newCustomer.rows[0]);
     } catch (error) {
+      console.error('Customer Google auth error:', error.message, error.code || '');
       return done(error, null);
     }
   }
@@ -142,7 +143,10 @@ router.get('/google/callback',
   (req, res) => {
     const returnTo = req.session.returnTo || '/admin';
     delete req.session.returnTo;
-    res.redirect(returnTo);
+    req.session.save((err) => {
+      if (err) console.error('Admin callback: session save error:', err.message);
+      res.redirect(returnTo);
+    });
   }
 );
 
@@ -199,7 +203,10 @@ router.get('/customer/google/callback',
     const returnTo = req.session.returnTo || '/customer/account';
     delete req.session.returnTo;
     delete req.session._authFlow;
-    res.redirect(returnTo);
+    req.session.save((err) => {
+      if (err) console.error('Customer callback: session save error:', err.message);
+      res.redirect(returnTo);
+    });
   }
 );
 

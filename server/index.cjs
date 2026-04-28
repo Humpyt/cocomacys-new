@@ -22,6 +22,9 @@ const requireAuth = require('./middleware/requireAuth.cjs');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust Nginx reverse proxy (required for secure cookies behind HTTPS)
+app.set('trust proxy', 1);
+
 // CORS configuration for development
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
