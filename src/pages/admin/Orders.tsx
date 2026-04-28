@@ -148,7 +148,7 @@ export function Orders() {
                               {order.shipping_address ? (
                                 <div className="text-sm text-gray-700 space-y-1">
                                   <p>{(order.shipping_address as Record<string, string>).address}</p>
-                                  <p>{(order.shipping_address as Record<string, string>).city}, {(order.shipping_address as Record<string, string>).country}</p>
+                                  <p>{(order.shipping_address as Record<string, string>).city}{(order.shipping_address as Record<string, string>).district ? `, ${(order.shipping_address as Record<string, string>).district}` : ''}</p>
                                 </div>
                               ) : (
                                 <p className="text-sm text-gray-400">No shipping address</p>

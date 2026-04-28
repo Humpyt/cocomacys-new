@@ -11,14 +11,24 @@ const SHIPPING_OPTIONS = [
   { id: 'overnight', name: 'Overnight Shipping', description: 'Next business day', price: 35000 },
 ]
 
+const UG_DISTRICTS = [
+  'Kampala', 'Wakiso', 'Mukono', 'Jinja', 'Mbale', 'Gulu', 'Lira',
+  'Mbarara', 'Kabale', 'Kasese', 'Fort Portal', 'Masaka', 'Entebbe',
+  'Arua', 'Hoima', 'Iganga', 'Kitgum', 'Luwero', 'Masindi', 'Mityana',
+  'Mpigi', 'Mubende', 'Ntungamo', 'Rukungiri', 'Soroti', 'Tororo',
+  'Busia', 'Bushenyi', 'Kabarole', 'Kamuli', 'Kanungu', 'Kapchorwa',
+  'Kayunga', 'Kibaale', 'Kisoro', 'Kotido', 'Kumi', 'Mayuge',
+  'Moroto', 'Nakasongola', 'Pallisa', 'Rakai', 'Sironko',
+]
+
 export function Checkout() {
   const { cart, refreshCart } = useCart()
   const items = cart?.items ?? []
 
   const [step, setStep] = useState<'address' | 'shipping' | 'payment' | 'confirmation'>('address')
   const [address, setAddress] = useState({
-    first_name: '', last_name: '', address: '', address_2: '',
-    city: '', state: '', postal_code: '', country: 'US', phone: '',
+    first_name: '', last_name: '', email: '', address: '', address_2: '',
+    city: '', district: '', country: 'UG', phone: '',
   })
   const [selectedShipping, setSelectedShipping] = useState(SHIPPING_OPTIONS[0])
   const [processing, setProcessing] = useState(false)
@@ -65,7 +75,7 @@ export function Checkout() {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: '',
+          email: address.email,
           shipping_address: address,
           shipping_method: selectedShipping,
         }),
@@ -132,6 +142,9 @@ export function Checkout() {
                       onChange={e => setAddress(a => ({ ...a, last_name: e.target.value }))}
                       className="border px-3 py-2" />
                   </div>
+                  <input required type="email" placeholder="Email" value={address.email}
+                    onChange={e => setAddress(a => ({ ...a, email: e.target.value }))}
+                    className="w-full border px-3 py-2" />
                   <input required placeholder="Address" value={address.address}
                     onChange={e => setAddress(a => ({ ...a, address: e.target.value }))}
                     className="w-full border px-3 py-2" />
@@ -139,23 +152,16 @@ export function Checkout() {
                     onChange={e => setAddress(a => ({ ...a, address_2: e.target.value }))}
                     className="w-full border px-3 py-2" />
                   <div className="grid grid-cols-2 gap-4">
-                    <input required placeholder="City" value={address.city}
+                    <input required placeholder="City / Town" value={address.city}
                       onChange={e => setAddress(a => ({ ...a, city: e.target.value }))}
                       className="border px-3 py-2" />
-                    <input required placeholder="State / Province" value={address.state}
-                      onChange={e => setAddress(a => ({ ...a, state: e.target.value }))}
-                      className="border px-3 py-2" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <input required placeholder="ZIP / Postal Code" value={address.postal_code}
-                      onChange={e => setAddress(a => ({ ...a, postal_code: e.target.value }))}
-                      className="border px-3 py-2" />
-                    <select required value={address.country}
-                      onChange={e => setAddress(a => ({ ...a, country: e.target.value }))}
+                    <select required value={address.district}
+                      onChange={e => setAddress(a => ({ ...a, district: e.target.value }))}
                       className="border px-3 py-2">
-                      <option value="US">United States</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="CA">Canada</option>
+                      <option value="">Select District</option>
+                      {UG_DISTRICTS.map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
                     </select>
                   </div>
                   <input required placeholder="Phone" value={address.phone}
