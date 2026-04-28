@@ -31,7 +31,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      const res = await authFetch('/auth/me');
+      const res = await authFetch('/auth/customer/me');
       if (res.ok) {
         const data = await res.json();
         setCustomer(data);
@@ -47,7 +47,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await authFetch('/auth/logout', { method: 'POST' });
+      await authFetch('/auth/customer/logout', { method: 'POST' });
     } finally {
       setCustomer(null);
       window.location.href = '/customer/login';

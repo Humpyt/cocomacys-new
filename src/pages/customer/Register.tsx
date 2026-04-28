@@ -16,7 +16,7 @@ export function Register() {
   const handleGoogleRegister = () => {
     setRedirecting(true);
     setTimeout(() => {
-      window.location.assign('/auth/google?returnTo=/customer/account');
+      window.location.assign('/auth/customer/google?returnTo=/customer/account');
     }, 0);
   };
 
