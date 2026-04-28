@@ -53,11 +53,6 @@ export function Login() {
           By signing in, you agree to our Terms of Use and Privacy Policy.
         </p>
 
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-400">
-            Admin? <a href="/admin/login" className="underline">Sign in to admin</a>
-          </p>
-        </div>
       </div>
     </main>
   );
