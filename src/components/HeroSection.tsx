@@ -104,20 +104,19 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Bonus Days Banner */}
-      <div className="border border-orange-600 flex flex-col md:flex-row items-center mb-12">
-        <div className="bg-white px-8 py-4 flex flex-col items-center justify-center border-r border-orange-600 min-w-[200px]">
-          <h3 className="text-2xl font-serif font-bold text-orange-600">Bonus Days</h3>
-          <p className="text-sm font-bold">Now-Apr. 6</p>
+      {/* Style Promise Banner */}
+      <div className="border border-gray-200 flex flex-col md:flex-row items-center mb-12 bg-white">
+        <div className="px-8 py-6 flex flex-col items-center justify-center border-r border-gray-200 min-w-[200px]">
+          <h3 className="text-2xl font-serif font-bold text-gray-900">The Coco Edit</h3>
+          <p className="text-sm text-gray-500 mt-1">Kampala · Lugogo</p>
         </div>
-        <div className="flex-1 px-8 py-4 flex flex-col md:flex-row items-center justify-between bg-gray-50">
+        <div className="flex-1 px-8 py-6 flex flex-col md:flex-row items-center justify-between">
           <div>
-            <h4 className="text-xl font-bold mb-1">Get $10 in Star Money <span className="italic text-orange-600">faster</span></h4>
-            <p className="text-xs text-gray-600">(that's 1,000 points) for every qualifying $75 spent with a Macy's Card or $100 spent as a Bronze member. Exclusions & details</p>
+            <h4 className="text-xl font-bold text-gray-900 mb-1">Style That Speaks <span className="italic text-orange-600">For Itself</span></h4>
+            <p className="text-sm text-gray-500 max-w-lg">Curated fashion for the modern you — handpicked pieces from global brands, right here at Forest Mall. No fuss, just flair.</p>
           </div>
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
-            <span className="text-orange-600 text-xl">*</span>
-            <span className="font-bold text-lg tracking-wider">Star Rewards</span>
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400">Shop BF-10</span>
           </div>
         </div>
       </div>
@@ -132,7 +131,6 @@ export function HeroSection() {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute top-4 left-4 bg-white text-black text-xs font-bold px-2 py-1">30% OFF</div>
           <div className="absolute bottom-4 left-4 text-white">
             <h3 className="text-2xl font-serif font-bold mb-1">Walk This Way</h3>
             <p className="text-sm opacity-90">Fresh sandals and everyday picks you'll live in.</p>
@@ -147,7 +145,6 @@ export function HeroSection() {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute top-4 left-4 bg-white text-black text-xs font-bold px-2 py-1">20% OFF</div>
           <div className="absolute bottom-4 left-4 text-white">
             <h3 className="text-2xl font-serif font-bold mb-1">Top That</h3>
             <p className="text-sm opacity-90">Effortless blouses for the season ahead.</p>
@@ -162,7 +159,6 @@ export function HeroSection() {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute top-4 left-4 bg-white text-black text-xs font-bold px-2 py-1">25% OFF</div>
           <div className="absolute bottom-4 left-4 text-white">
             <h3 className="text-2xl font-serif font-bold mb-1">Bag This</h3>
             <p className="text-sm opacity-90">Polished carryalls worth the carry.</p>
@@ -177,7 +173,6 @@ export function HeroSection() {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute top-4 left-4 bg-white text-black text-xs font-bold px-2 py-1">30% OFF</div>
           <div className="absolute bottom-4 left-4 text-white">
             <h3 className="text-2xl font-serif font-bold mb-1">Button It Up</h3>
             <p className="text-sm opacity-90">From kickoff to the office — shirts that mean business.</p>
