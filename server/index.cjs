@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const PgSession = require('connect-pg-simple')(session);
 const pool = require('./db.cjs');
@@ -32,6 +33,9 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
+
+// Compression middleware
+app.use(compression());
 
 // Body parsing middleware
 app.use(express.json());

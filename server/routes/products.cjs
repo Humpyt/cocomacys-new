@@ -6,8 +6,11 @@ const requireAuth = require('../middleware/requireAuth.cjs');
 // GET /api/products - list with filtering
 router.get('/', async (req, res) => {
   try {
-    const { category, collection_id, gender, limit = 20, order = 'created_at DESC' } = req.query;
-    let query = 'SELECT * FROM products WHERE 1=1';
+    const { category, collection_id, gender, limit = 20, offset = 0, order = 'created_at DESC' } = req.query;
+    let query = `SELECT id, name, brand, price, original_price, discount,
+      promo, rating, reviews, images, colors, category, collection_id,
+      created_at, updated_at
+      FROM products WHERE 1=1`;
     const params = [];
     let paramCount = 0;
 
@@ -37,9 +40,15 @@ router.get('/', async (req, res) => {
     query += ` ORDER BY ${validOrders.includes(orderCol) ? orderCol : 'created_at'} ${orderDir}`;
 
     if (parseInt(limit) > 0) {
-      query += ` LIMIT $${paramCount + 1}`;
+      paramCount++;
+      query += ` LIMIT $${paramCount}`;
       params.push(Math.min(parseInt(limit), 100));
     }
+
+    paramCount++;
+    const parsedOffset = Math.max(0, parseInt(offset) || 0);
+    query += ` OFFSET $${paramCount}`;
+    params.push(parsedOffset);
 
     const result = await pool.query(query, params);
     res.json(result.rows);
