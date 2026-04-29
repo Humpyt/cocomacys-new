@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const FROM = process.env.EMAIL_FROM || 'Coco Fashion Brands <cocofashionbrands@gmail.com>';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -191,8 +192,61 @@ async function sendOrderConfirmation(order, items) {
     });
 
     console.log(`[email] Order confirmation sent for #${order.id} to ${order.email}`);
+
+    // Notify admin if ADMIN_EMAIL is configured
+    if (ADMIN_EMAIL) {
+      await sendAdminNotification(order, items, address);
+    }
   } catch (error) {
     console.error(`[email] Failed to send confirmation for order #${order.id}:`, error.message);
+  }
+}
+
+async function sendAdminNotification(order, items, address) {
+  try {
+    const itemList = items.map(item =>
+      `${item.quantity}x ${item.name} — ${formatUGX(item.unit_price * item.quantity)}`
+    ).join('<br>');
+
+    const html = baseEmail(`
+      <h2 style="font-family:Georgia,serif;font-size:20px;color:#1f2937;margin:0 0 8px">New Order Received</h2>
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:#6b7280;margin:0 0 24px">
+        A new order has been placed on the store.
+      </p>
+
+      <div style="background:#f9fafb;border-radius:6px;padding:20px;margin-bottom:24px">
+        <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">
+          <tr><td style="padding:4px 8px;color:#6b7280;width:100px">Order</td><td style="color:#1f2937;font-weight:600">#${order.id}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Customer</td><td style="color:#1f2937">${escapeHtml(address.first_name + ' ' + address.last_name)}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Email</td><td style="color:#1f2937">${escapeHtml(order.email)}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Phone</td><td style="color:#1f2937">${escapeHtml(address.phone || '—')}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Address</td><td style="color:#1f2937">${addressHtml(address)}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Payment</td><td style="color:#1f2937">Cash on Delivery</td></tr>
+        </table>
+      </div>
+
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:#6b7280;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px">Items</p>
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:#1f2937;margin:0 0 16px;line-height:1.8">
+        ${itemList}
+      </p>
+
+      ${totalsHtml(order)}
+
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:#9ca3af;margin:24px 0 0">
+        <a href="https://cocofashionbrands.com/admin/orders" style="color:#374151;font-weight:600">View in Admin Dashboard</a>
+      </p>
+    `);
+
+    await sendEmail({
+      from: FROM,
+      to: [ADMIN_EMAIL],
+      subject: `🔔 New Order #${order.id} — ${formatUGX(order.total)}`,
+      html,
+    });
+
+    console.log(`[email] Admin notification sent for order #${order.id} to ${ADMIN_EMAIL}`);
+  } catch (error) {
+    console.error(`[email] Failed to send admin notification for order #${order.id}:`, error.message);
   }
 }
 
