@@ -85,8 +85,9 @@ router.post('/', requireAuth, async (req, res) => {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
-       promo, rating || 0, reviews || 0, images || [], colors || [],
-       sizes || [], types || [], features || [], details, category]
+       promo, rating || 0, reviews || 0, images || [],
+       JSON.stringify(colors || []), JSON.stringify(sizes || []),
+       JSON.stringify(types || []), features || [], details, category]
     );
 
     res.status(201).json(result.rows[0]);
@@ -128,7 +129,10 @@ router.put('/:id', requireAuth, async (req, res) => {
        WHERE id = $17
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
-       promo, rating, reviews, images, colors, sizes, types,
+       promo, rating, reviews, images,
+       colors != null ? JSON.stringify(colors) : null,
+       sizes != null ? JSON.stringify(sizes) : null,
+       types != null ? JSON.stringify(types) : null,
        features, details, category, id]
     );
 
