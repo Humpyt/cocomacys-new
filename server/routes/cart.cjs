@@ -47,11 +47,16 @@ function createCartRouter({ pool = defaultPool } = {}) {
     try {
       const { customer_id, email } = req.body;
 
+      // Prefer session customer_id over request body for logged-in users
+      const resolvedCustomerId = (req.user && req.user._type === 'customer')
+        ? String(req.user.id)
+        : (customer_id || null);
+
       const result = await pool.query(`
         INSERT INTO carts (customer_id, email, status)
         VALUES ($1, $2, 'active')
         RETURNING *
-      `, [customer_id || null, email || null]);
+      `, [resolvedCustomerId, email || null]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -190,7 +195,7 @@ function createCartRouter({ pool = defaultPool } = {}) {
         RETURNING *
       `, [
         id,
-        req.session.customer ? String(req.session.customer.id) : (cart.customer_id || null),
+        (req.user && req.user._type === 'customer') ? String(req.user.id) : (cart.customer_id || null),
         email || cart.email,
         JSON.stringify(shipping_address || cart.shipping_address),
         JSON.stringify(shipping_method || null),
