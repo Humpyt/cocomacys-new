@@ -15,6 +15,7 @@ import {
 import { getImageSrc } from '../lib/images';
 import { COLLECTION_IDS } from '../lib/subcategoryMap';
 import {
+  formatProductLabel,
   getWomenCategoryHref,
   resolveWomenCategorySlug,
   WOMEN_CATEGORY_LABELS,
@@ -66,7 +67,7 @@ function mapProduct(product: ApiProductRecord): Product {
     id: String(product.id),
     href: `/product?id=${encodeURIComponent(String(product.id))}`,
     image: getImageSrc(getProductImage(product)),
-    brand: product.brand || product.category || '',
+    brand: formatProductLabel(product.brand, product.category),
     name: product.name || '',
     price,
     originalPrice: originalPrice != null ? formatCurrency(originalPrice) : undefined,

@@ -82,3 +82,31 @@ export function getProductHref(id?: string | number | null) {
   }
   return `/product?id=${encodeURIComponent(String(id))}`;
 }
+
+const CATEGORY_LABEL_OVERRIDES: Record<string, string> = {
+  'women_shoes': 'Women Shoes',
+  'women_bags': 'Women Handbags',
+  'women_blouses': 'Women Blouses',
+  'women_dresses': 'Women Dresses',
+  'women_waist-coats': 'Women Waist-Coats',
+  'men_shoes': 'Men Shoes',
+  'men_shirts': 'Men Shirts',
+  'men_t-shirts': 'Men T-Shirts',
+  'men_jeans': 'Men Jeans',
+  'ties': 'Ties',
+  'bow-ties': 'Bow-Ties',
+};
+
+export function formatProductLabel(brand?: string | null, category?: string | null): string {
+  const cleanBrand = brand?.trim();
+  if (cleanBrand) {
+    return cleanBrand;
+  }
+
+  const cleanCategory = category?.trim();
+  if (!cleanCategory) {
+    return '';
+  }
+
+  return CATEGORY_LABEL_OVERRIDES[cleanCategory.toLowerCase()] ?? cleanCategory.replace(/[_-]+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}

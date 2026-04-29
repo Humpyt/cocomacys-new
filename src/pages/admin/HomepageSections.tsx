@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Check, X, Search, Plus } from 'lucide-react';
 import { api, type HomepageSection, type ApiProductRecord, type ApiCollectionRecord } from '../../lib/api';
 import { getImageSrc } from '../../lib/images';
+import { formatProductLabel } from '../../lib/navigation';
 
 interface SectionWithProducts extends HomepageSection {
   products?: ApiProductRecord[];
@@ -302,7 +303,7 @@ export function HomepageSections() {
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                        <p className="text-xs text-gray-500">{product.brand || product.category || '—'}</p>
+                        <p className="text-xs text-gray-500">{formatProductLabel(product.brand, product.category) || '—'}</p>
                       </div>
                     </button>
                   );

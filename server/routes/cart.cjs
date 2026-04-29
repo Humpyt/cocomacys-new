@@ -1,5 +1,6 @@
 const express = require('express');
 const defaultPool = require('../db.cjs');
+const { sendOrderConfirmation } = require('../email.cjs');
 
 function calculateOrderAmounts(items, shippingMethod) {
   const subtotal = Math.round(
@@ -199,6 +200,9 @@ function createCartRouter({ pool = defaultPool } = {}) {
       ]);
 
       await pool.query('UPDATE carts SET status = $1 WHERE id = $2', ['completed', id]);
+
+      // Fire and forget: send confirmation email without blocking the response
+      sendOrderConfirmation(orderResult.rows[0], itemsResult.rows);
 
       res.status(201).json({
         order: orderResult.rows[0],

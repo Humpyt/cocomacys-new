@@ -22,6 +22,7 @@ Full-stack e-commerce site ("Cocomacys") with a React + Vite + Tailwind CSS stor
 - **Google OAuth** via `passport-google-oauth20`
 - **Express Session** with PostgreSQL store (`connect-pg-simple`)
 - **Multer** for multipart image uploads
+- **Nodemailer** for transactional emails via Gmail SMTP (order confirmations, status updates)
 
 ## Commands
 
@@ -45,11 +46,12 @@ node server/index.cjs                    # Start Express backend (port 3001)
 ### Running tests
 
 ```bash
-npx vitest run                    # Run frontend tests (Vitest, uses vite.config.ts)
+npx vitest run                    # Run all frontend tests once
+npx vitest run src/pages/Home.test.tsx  # Run a single test file
+npx vitest run -t "test name"     # Run tests matching a pattern
 npx vitest                        # Vitest watch mode
 node --test server/tests/flows.smoke.test.cjs   # Run backend smoke tests (Node test runner)
-```
-
+npx tsx some-file.ts              # Run a TypeScript file directly (e.g. scripts)
 ```
 
 **Critical:** The Vite dev server proxies `/api`, `/auth`, and `/uploads` to the Express backend on port 3001 automatically — no CORS issues in development.
@@ -112,6 +114,16 @@ src/
         └── RequireAuth.tsx     # Auth guard for protected routes
 ```
 
+### Testing Patterns
+
+- **React Router components** must be wrapped in `<MemoryRouter>` for tests:
+  ```tsx
+  render(<MemoryRouter><MyComponent /></MemoryRouter>);
+  ```
+- **Cart/Auth context consumers** need their respective providers (`<CartProvider>`, `<AuthProvider>`) wrapping the component under test.
+- **Mock the API client** via `vi.mock('../lib/api', ...)` — use `vi.hoisted()` for mock functions referenced inside the factory.
+- Vitest picks up `vite.config.ts` for path aliases (so `@/src/lib/api` resolves in tests) and auto-discovers `src/test/setup.ts` for global test setup (jest-dom matchers, cleanup).
+
 ### Backend Structure
 **Note:** Backend files use `.cjs` extension (CommonJS) for Express route handlers.
 ```
@@ -134,7 +146,8 @@ server/
 │   ├── orders.cjs           # Orders API at /api/orders (customer + admin)
 │   ├── homepage-sections.cjs # Homepage section CRUD at /api/homepage-sections
 │   ├── upload.cjs           # Image upload at /api/upload
-│   └── import.cjs           # CSV import at /api/import
+│   ├── import.cjs           # CSV import at /api/import
+│   └── email.cjs            # Transactional email sending (Nodemailer)
 └── tests/                   # Backend smoke tests
 cocomacys.sql                # Base schema (products, admin_users, session)
 ```
@@ -143,6 +156,7 @@ cocomacys.sql                # Base schema (products, admin_users, session)
 - `cart.cjs` and `clearance.cjs` export **factory functions** (`createCartRouter({ pool })`, `createClearanceRouter({ pool })`) that accept a database pool for testability. All other route files import `pool` directly from `../db.cjs`.
 - In `server/index.cjs`, `clearanceRoutes` and `homepageSectionsRoutes` are mounted with `requireAuth` middleware at the router level, making ALL their endpoints admin-only.
 - The server serves the Vite-built `dist/` directory as a fallback for production (SPA client-side routing).
+- `server/email.cjs` exports `sendOrderConfirmation()` and `sendOrderStatusUpdate()`. Both are called **fire-and-forget** (no `await`) from route handlers so email failures never block the API response.
 
 ### Path Alias
 The `@` alias maps to the project root (configured in both `vite.config.ts` and `tsconfig.json`):
@@ -223,6 +237,17 @@ SESSION_SECRET=change-this-in-production
 FRONTEND_URL=http://localhost:3000
 PORT=3001
 ```
+
+**Required for transactional emails (`server/email.cjs`):**
+```bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_16_char_app_password   # Generate at https://myaccount.google.com/apppasswords
+EMAIL_FROM=Coco Fashion Brands <cocofashionbrands@gmail.com>
+```
+Gmail SMTP requires 2FA enabled on the Google account and an app-specific password (not your regular password).
+Free tier: 500 emails/day. For higher volume, replace SMTP_HOST/SMTP_PORT with any other provider — Nodemailer is transport-agnostic.
 
 **Optional for AI features (used by `vite.config.ts` define):**
 ```bash

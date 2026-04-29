@@ -17,7 +17,7 @@ import {
 } from '../lib/api';
 import { getImageSrc } from '../lib/images';
 import { COLLECTION_IDS } from '../lib/subcategoryMap';
-import { getMenCategoryHref } from '../lib/navigation';
+import { formatProductLabel, getMenCategoryHref } from '../lib/navigation';
 
 function toCardProps(product: ApiProductRecord) {
   const image = getImageSrc(getProductImage(product));
@@ -27,7 +27,7 @@ function toCardProps(product: ApiProductRecord) {
   return {
     id: String(product.id),
     image,
-    brand: product.brand || product.category || 'Brand',
+    brand: formatProductLabel(product.brand, product.category) || 'Brand',
     name: product.name,
     price: formatCurrency(price),
     originalPrice: originalPrice != null ? formatCurrency(originalPrice) : undefined,

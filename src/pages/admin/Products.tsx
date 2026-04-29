@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Pencil, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api, type ApiProductRecord, formatCurrency, getProductPrice, getProductImage, isProductOnSale } from '../../lib/api';
 import { getImageSrc } from '../../lib/images';
+import { formatProductLabel } from '../../lib/navigation';
 
 export function Products() {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ export function Products() {
                         <span className="font-medium text-gray-900">{product.name}</span>
                       </td>
                       <td className="px-4 py-3 text-gray-600">{product.brand || '—'}</td>
-                      <td className="px-4 py-3 text-gray-600">{product.category || '—'}</td>
+                      <td className="px-4 py-3 text-gray-600">{formatProductLabel(undefined, product.category) || '—'}</td>
                       <td className="px-4 py-3">
                         <span className="font-semibold">{formatCurrency(getProductPrice(product))}</span>
                         {onSale && <span className="ml-2 text-xs text-green-600 font-medium">Sale</span>}

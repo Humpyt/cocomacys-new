@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db.cjs');
 const requireAuth = require('../middleware/requireAuth.cjs');
+const { sendOrderStatusUpdate } = require('../email.cjs');
 
 // GET /api/orders - List orders for a customer
 router.get('/', async (req, res) => {
@@ -142,6 +143,9 @@ router.put('/:id/status', requireAuth, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Order not found' });
     }
+
+    // Fire and forget: send status update email without blocking the response
+    sendOrderStatusUpdate(result.rows[0]);
 
     res.json(result.rows[0]);
   } catch (error) {

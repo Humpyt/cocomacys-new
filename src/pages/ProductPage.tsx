@@ -14,7 +14,8 @@ import {
   getProductRating,
   getErrorMessage,
 } from '../lib/api';
-import { getImageSrc, handleImageFallback, getColorHex } from '../lib/images';
+import { getImageSrc, handleImageFallback, getColorHex, getColorLabel } from '../lib/images';
+import { formatProductLabel } from '../lib/navigation';
 
 interface RelatedProduct {
   id: string;
@@ -39,7 +40,7 @@ function mapRelatedProduct(product: ApiProductRecord): RelatedProduct {
     id: String(product.id),
     href: `/product?id=${encodeURIComponent(String(product.id))}`,
     image: getImageSrc(getProductImage(product)),
-    brand: product.brand || product.category || '',
+    brand: formatProductLabel(product.brand, product.category),
     name: product.name || '',
     price,
     originalPrice: originalPrice != null ? formatCurrency(originalPrice) : undefined,
@@ -191,7 +192,7 @@ export function ProductPage() {
   const discount = getProductDiscountLabel(product);
   const rating = getProductRating(product);
   const images = product.images.length > 0 ? product.images : [];
-  const colors = product.colors.map((c) => ({ name: c, hex: getColorHex(c) }));
+  const colors = product.colors.map((c) => ({ name: getColorLabel(c), hex: getColorHex(c) }));
   const types = product.types.length > 0 ? product.types : ['Regular'];
   const sizes = product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
   const features = product.features ?? [];
@@ -250,7 +251,7 @@ export function ProductPage() {
 
           {/* Right: Product Info */}
           <div className="w-full lg:w-5/12 flex flex-col">
-            <h2 className="text-lg font-bold mb-1">{product.brand || product.category || ''}</h2>
+            <h2 className="text-lg font-bold mb-1">{formatProductLabel(product.brand, product.category)}</h2>
             <h1 className="text-xl mb-3 text-gray-800">{product.name}</h1>
             {product.promo && <p className="text-xs text-gray-500 mb-3">{product.promo}</p>}
 
@@ -278,7 +279,7 @@ export function ProductPage() {
             {/* Color Selection */}
             {colors.length > 0 && (
               <div className="mb-6">
-                <p className="font-bold text-sm mb-3">Color: <span className="font-normal">{selectedColor}</span></p>
+                <p className="font-bold text-sm mb-3">Color: <span className="font-normal">{getColorLabel(selectedColor)}</span></p>
                 <div className="flex flex-wrap gap-2">
                   {colors.map(c => (
                     <button
@@ -437,7 +438,7 @@ export function ProductPage() {
         {brandProducts.length > 0 && (
           <div className="mb-16">
             <ProductCarousel
-              title={`More from ${product.brand || product.category || 'Our Collection'}`}
+              title={`More from ${formatProductLabel(product.brand, product.category) || 'Our Collection'}`}
               products={brandProducts}
             />
           </div>

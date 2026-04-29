@@ -30,7 +30,9 @@ export const COLOR_HEX_MAP: Record<string, string> = {
   'navy blue': '#000080',
   'red': '#cc0000',
   'burgundy': '#800020',
+  'burgundy red': '#7a1e2c',
   'pink': '#ffc0cb',
+  'hot pink': '#ff69b4',
   'pink rose gem': '#ffb6c1',
   'rose': '#ff007f',
   'gray': '#808080',
@@ -46,6 +48,8 @@ export const COLOR_HEX_MAP: Record<string, string> = {
   'teal': '#008080',
   'denim': '#1560bd',
   'blue': '#0000ff',
+  'dark blue': '#003366',
+  'light blue': '#add8e6',
   'royal blue': '#4169e1',
   'royal': '#4169e1',
   'green': '#008000',
@@ -70,8 +74,18 @@ export const COLOR_HEX_MAP: Record<string, string> = {
   'slate blue': '#6a5acd',
   'wine': '#722f37',
   'crimson': '#dc143c',
+  'maroon': '#800000',
   'gold': '#ffd700',
   'silver': '#c0c0c0',
+  'stone': '#8d8c8a',
+  'stones': '#8d8c8a',
+  'nude': '#e3bc9a',
+  'peach': '#ffcba4',
+  'checked': '#6b7280',
+  'floral': '#d16ba5',
+  'pattern': '#7c3aed',
+  'print': '#6b7280',
+  'sequin': '#a8a29e',
   'pearl': '#f0ead6',
   'multi': '#888888',
   'multicolor': '#888888',
@@ -82,6 +96,23 @@ export const COLOR_HEX_MAP: Record<string, string> = {
 export function getColorHex(colorName: string | null | undefined): string {
   if (!colorName) return '#888888';
   return COLOR_HEX_MAP[colorName.toLowerCase()] ?? '#888888';
+}
+
+const COLOR_LABEL_OVERRIDES: Record<string, string> = {
+  'burgundy red': 'Burgundy Red',
+  'dark blue': 'Dark Blue',
+  'hot pink': 'Hot Pink',
+  'light blue': 'Light Blue',
+  'stones': 'Stone',
+};
+
+export function getColorLabel(colorName: string | null | undefined): string {
+  if (!colorName) return '';
+
+  const normalized = colorName.trim().toLowerCase();
+  if (!normalized) return '';
+
+  return COLOR_LABEL_OVERRIDES[normalized] ?? colorName.trim().replace(/\s+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export function handleImageFallback(event: SyntheticEvent<HTMLImageElement>): void {
