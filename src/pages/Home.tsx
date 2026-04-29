@@ -8,9 +8,7 @@ import {
   api,
   type ApiProductRecord,
   formatCurrency,
-  getProductDiscountLabel,
   getProductImage,
-  getProductOriginalPrice,
   getProductPrice,
   getProductRating,
   isProductOnSale,
@@ -22,7 +20,6 @@ import { formatProductLabel, getMenCategoryHref } from '../lib/navigation';
 function toCardProps(product: ApiProductRecord) {
   const image = getImageSrc(getProductImage(product));
   const price = getProductPrice(product);
-  const originalPrice = getProductOriginalPrice(product);
 
   return {
     id: String(product.id),
@@ -30,12 +27,9 @@ function toCardProps(product: ApiProductRecord) {
     brand: formatProductLabel(product.brand, product.category) || 'Brand',
     name: product.name,
     price: formatCurrency(price),
-    originalPrice: originalPrice != null ? formatCurrency(originalPrice) : undefined,
-    discount: getProductDiscountLabel(product),
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
     colors: product.colors.length > 0 ? product.colors : undefined,
-    promo: product.promo ?? undefined,
   };
 }
 
@@ -52,7 +46,6 @@ const STRIP_CATEGORIES = [
 
 const LOVED_TABS = [
   { key: 'dressy', label: 'Dressy looks' },
-  { key: 'deals', label: 'Deals for you' },
   { key: 'handbags', label: 'Spring handbags' },
   { key: 'new-arrivals', label: 'New arrivals' },
 ] as const;
@@ -108,9 +101,6 @@ export function Home() {
     if (lovedTab === 'new-arrivals') {
       api.products.list({ limit: 6, order: 'created_at DESC' })
         .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0).slice(0, 6)));
-    } else if (lovedTab === 'deals') {
-      api.products.list({ limit: 20, order: 'created_at DESC' })
-        .then(({ products }) => setLovedProducts(products.filter(p => isProductOnSale(p)).slice(0, 6)));
     } else if (lovedTab === 'dressy') {
       api.products.list({ collection_id: COLLECTION_IDS.women.subcategories.dresses, limit: 6, order: 'created_at DESC' })
         .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0)));
@@ -141,14 +131,6 @@ export function Home() {
         image="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=2000"
         title="Spring break finds<br/>for fun in the sun"
         buttonText="Shop now"
-        align="left"
-      />
-
-      <PromoBanner
-        image="https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&q=80&w=2000"
-        title="Denim for him<br/>& her 30% OFF"
-        subtitle="Shop fits &amp; trends for the season ahead."
-        buttonText="Shop by category ▼"
         align="left"
       />
 
@@ -189,30 +171,6 @@ export function Home() {
         title="Men's Section"
         products={mensProducts.map(toCardProps)}
       />
-
-      {/* Enjoy 30% OFF Banner */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="border border-gray-300 flex flex-col md:flex-row items-center p-6">
-          <div className="flex items-center space-x-4 mb-6 md:mb-0">
-            <span className="text-orange-600 text-3xl">*</span>
-            <span className="text-2xl font-bold tracking-wider">STAR REWARDS</span>
-          </div>
-          <div className="flex-1 flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center mb-6 md:mb-0">
-              <div className="w-32 h-20 bg-orange-600 rounded-md shadow-md mr-6 transform -rotate-6"></div>
-              <div>
-                <h3 className="text-3xl font-serif font-bold italic mb-1">Enjoy 30% OFF</h3>
-                <p className="text-xl font-bold mb-2">on your first order</p>
-                <p className="text-xs text-gray-600">Sign up and save on your first purchase. New customers only. <Link to="/contact" className="underline">Terms & details</Link></p>
-              </div>
-            </div>
-            <div className="flex flex-col items-center">
-              <Link to="/customer/register" className="border border-black px-6 py-2 font-bold mb-2 hover:bg-gray-50">Sign Up Now</Link>
-              <p className="text-xs text-gray-600">Free shipping on orders over USh 200,000</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <ProductCarousel
         title="Discover more options"
