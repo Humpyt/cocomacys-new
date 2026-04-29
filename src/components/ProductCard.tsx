@@ -1,5 +1,6 @@
 import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getColorHex } from '../lib/images';
 
 export interface ProductCardProps {
   id?: string;
@@ -42,7 +43,7 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
         
         <div className="mt-auto">
           <div className="flex items-baseline space-x-2 mb-1">
-            <span className="font-bold text-orange-600">{price}</span>
+            <span className="font-bold text-gray-900">{price}</span>
             {originalPrice && <span className="text-sm text-gray-500 line-through">{originalPrice}</span>}
             {discount && <span className="text-sm text-orange-600">({discount})</span>}
           </div>
@@ -63,7 +64,7 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
           {colors && colors.length > 0 && (
             <div className="flex space-x-1 mt-1">
               {colors.map((color, i) => (
-                <div key={i} className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: color }}></div>
+                <div key={i} className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: getColorHex(color) }}></div>
               ))}
               {colors.length > 4 && <span className="text-xs text-gray-500 ml-1">+{colors.length - 4}</span>}
             </div>
