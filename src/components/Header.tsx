@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Gift, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useCart } from '../context/CartContext';
@@ -31,12 +31,11 @@ export function Header() {
       {/* Top Bar */}
       <div className="bg-black text-white text-xs py-2 px-4 flex justify-between items-center overflow-x-auto whitespace-nowrap">
         <div className="flex space-x-6 mx-auto max-w-[1440px] w-full px-4 sm:px-6 lg:px-8">
-          <span className="font-bold">TODAY'S DEALS:</span>
-          <span>Up to 60% off Easter deals</span>
-          <span>Up to 40% off women's sandals</span>
-          <span>Up to 70% off styles for her</span>
-          <span>Buy 1, get 1 free toys</span>
-          <Link to="/" className="underline ml-auto">See All &gt;</Link>
+          <span className="font-bold">THE COCO EDIT:</span>
+          <span>Handpicked styles, delivered fresh weekly</span>
+          <span>Quality pieces from the world's best brands</span>
+          <span>Curated fashion — no filler, just flair</span>
+          <span>Shop Forest Mall · Lugogo · BF-10</span>
         </div>
       </div>
 
@@ -107,10 +106,6 @@ export function Header() {
               </Link>
             )}
           </div>
-          <div className="hidden lg:flex items-center space-x-1 cursor-pointer">
-            <Gift size={20} />
-            <span className="font-medium">Registry</span>
-          </div>
           <div className="cursor-pointer relative" onClick={openDrawer}>
             <ShoppingBag size={24} />
             {itemCount > 0 && (
@@ -124,10 +119,10 @@ export function Header() {
 
       {/* Navigation */}
       <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 hidden lg:flex items-center text-sm font-medium">
-        <div className="flex items-center space-x-1 cursor-pointer">
+        <Link to="/" className="flex items-center space-x-1 hover:underline">
           <Menu size={20} />
-          <span>Shop All</span>
-        </div>
+          <span>Home</span>
+        </Link>
         <div className="flex space-x-6 ml-8">
           <Link to="/women" className="hover:underline">Women</Link>
           <Link to="/men" className="hover:underline">Men</Link>
