@@ -32,9 +32,6 @@ git reset --hard
 npm ci
 npm run build
 
-# Install server dependencies
-npm --prefix server ci
-
 # Copy production environment file if it exists
 if [ -f "$APP_ROOT/.env.production" ]; then
   echo "[deploy] Using .env.production"
