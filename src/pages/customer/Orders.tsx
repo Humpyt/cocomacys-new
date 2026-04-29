@@ -94,7 +94,7 @@ export function CustomerOrders() {
                 <div key={order.id} className="border border-gray-200 rounded p-4">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <p className="font-bold">Order #{order.id.slice(0, 8)}</p>
+                      <p className="font-bold">Order #{order.id}</p>
                       <p className="text-xs text-gray-500">
                         {new Date(order.created_at).toLocaleDateString('en-US', {
                           year: 'numeric', month: 'long', day: 'numeric'

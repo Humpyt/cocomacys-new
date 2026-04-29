@@ -10,8 +10,8 @@ export function Orders() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [page, setPage] = useState(1);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const pageSize = 20;
 
   const fetchOrders = useCallback(async () => {
@@ -32,7 +32,7 @@ export function Orders() {
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
-  const handleStatusChange = async (orderId: number, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);
     try {
       await api.orders.updateStatus(orderId, newStatus);

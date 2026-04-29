@@ -75,7 +75,7 @@ export interface HomepageSection {
 }
 
 export interface AdminOrder {
-  id: number;
+  id: string;
   cart_id: number;
   customer_id: number;
   email: string;
@@ -88,7 +88,7 @@ export interface AdminOrder {
   status: string;
   payment_status: string;
   items: Array<{
-    id: number;
+    id: string;
     product_id: number;
     quantity: number;
     unit_price: string;
@@ -373,7 +373,7 @@ export const api = {
       return apiFetch<{ orders: AdminOrder[]; total: number }>(`/orders/admin${query ? `?${query}` : ''}`);
     },
 
-    updateStatus: async (id: number, status: string): Promise<void> => {
+    updateStatus: async (id: string, status: string): Promise<void> => {
       await apiFetch(`/orders/${id}/status`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
