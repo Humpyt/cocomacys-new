@@ -1,6 +1,41 @@
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react';
 
 export function Contact() {
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm(prev => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) return;
+
+    setStatus('sending');
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Something went wrong (${res.status})`);
+      }
+
+      setStatus('success');
+      setForm({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to send message.');
+    }
+  };
+
   return (
     <main className="font-sans">
       {/* Hero */}
@@ -66,7 +101,7 @@ export function Contact() {
                   <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-1">Store Hours</h3>
                   <div className="text-gray-600 space-y-0.5">
                     <p>Monday – Saturday: 9:00 AM – 8:00 PM</p>
-                    <p>Sunday: 10:00 AM – 6:00 PM</p>
+                    <p>Sunday: Closed</p>
                   </div>
                 </div>
               </div>
@@ -86,78 +121,98 @@ export function Contact() {
             <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
               <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">Send Us a Message</h2>
 
-              <form className="space-y-5" onSubmit={e => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {status === 'success' ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <CheckCircle size={48} className="text-green-500 mb-4" />
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Message Sent!</h3>
+                  <p className="text-gray-500 text-sm mb-6">We'll get back to you as soon as possible.</p>
+                  <button
+                    onClick={() => setStatus('idle')}
+                    className="px-5 py-2.5 rounded-lg bg-orange-600 text-white font-semibold text-sm hover:bg-orange-700 transition-colors"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-5" onSubmit={handleSubmit}>
+                  {status === 'error' && (
+                    <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                      <AlertCircle size={16} />
+                      {errorMsg}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="name" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                        Name *
+                      </label>
+                      <input
+                        id="name"
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={update('name')}
+                        placeholder="Your name"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                        Email *
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={update('email')}
+                        placeholder="you@example.com"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label htmlFor="name" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                      Name *
+                    <label htmlFor="subject" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                      Subject
                     </label>
                     <input
-                      id="name"
+                      id="subject"
                       type="text"
-                      required
-                      placeholder="Your name"
+                      value={form.subject}
+                      onChange={update('subject')}
+                      placeholder="How can we help?"
                       className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
                     />
                   </div>
+
                   <div>
-                    <label htmlFor="email" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                      Email *
+                    <label htmlFor="message" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                      Message *
                     </label>
-                    <input
-                      id="email"
-                      type="email"
+                    <textarea
+                      id="message"
                       required
-                      placeholder="you@example.com"
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                      rows={5}
+                      value={form.message}
+                      onChange={update('message')}
+                      placeholder="Tell us what's on your mind..."
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label htmlFor="subject" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                    Subject
-                  </label>
-                  <input
-                    id="subject"
-                    type="text"
-                    placeholder="How can we help?"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    required
-                    rows={5}
-                    placeholder="Tell us what's on your mind..."
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-lg bg-orange-600 text-white font-semibold text-sm hover:bg-orange-700 transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={status === 'sending'}
+                    className="w-full py-3 rounded-lg bg-orange-600 text-white font-semibold text-sm hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <Send size={16} />
+                    {status === 'sending' ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Map placeholder */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="aspect-[21/9] rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
-          <div className="text-center">
-            <MapPin size={32} className="text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">Forest Mall - Lugogo, Kampala</p>
-            <p className="text-gray-400 text-sm">Shop BF-10</p>
           </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ const cartRoutes = require('./routes/cart.cjs');
 const wishlistRoutes = require('./routes/wishlist.cjs');
 const homepageSectionsRoutes = require('./routes/homepage-sections.cjs');
 const ordersRoutes = require('./routes/orders.cjs');
+const contactRoutes = require('./routes/contact.cjs');
 const requireAuth = require('./middleware/requireAuth.cjs');
 
 const app = express();
@@ -72,6 +73,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/clearance', requireAuth, clearanceRoutes);
 app.use('/api/homepage-sections', requireAuth, homepageSectionsRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

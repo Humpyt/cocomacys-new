@@ -284,4 +284,43 @@ async function sendOrderStatusUpdate(order) {
   }
 }
 
-module.exports = { sendOrderConfirmation, sendOrderStatusUpdate };
+async function sendContactFormMessage({ name, email, subject, message }) {
+  try {
+    const html = baseEmail(`
+      <h2 style="font-family:Georgia,serif;font-size:20px;color:#1f2937;margin:0 0 8px">New Contact Form Message</h2>
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:#6b7280;margin:0 0 24px">
+        Someone reached out via the contact page on cocofashionbrands.com.
+      </p>
+
+      <div style="background:#f9fafb;border-radius:6px;padding:20px;margin-bottom:24px">
+        <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">
+          <tr><td style="padding:4px 8px;color:#6b7280;width:80px">Name</td><td style="color:#1f2937;font-weight:600">${escapeHtml(name)}</td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Email</td><td style="color:#1f2937"><a href="mailto:${escapeHtml(email)}" style="color:#374151">${escapeHtml(email)}</a></td></tr>
+          <tr><td style="padding:4px 8px;color:#6b7280">Subject</td><td style="color:#1f2937">${escapeHtml(subject || '(not provided)')}</td></tr>
+        </table>
+      </div>
+
+      <div style="background:#f9fafb;border-radius:6px;padding:20px;margin-bottom:24px">
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#6b7280;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px">Message</p>
+        <p style="font-family:Arial,sans-serif;font-size:14px;color:#1f2937;margin:0;line-height:1.6;white-space:pre-wrap">${escapeHtml(message)}</p>
+      </div>
+
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:#9ca3af;margin:0">
+        Reply directly to this email to respond to ${escapeHtml(name)}.
+      </p>
+    `);
+
+    await sendEmail({
+      to: ['fashionbrandsintl@gmail.com'],
+      subject: `📬 Contact: ${escapeHtml(subject || 'New message')} — from ${escapeHtml(name)}`,
+      html,
+    });
+
+    console.log(`[email] Contact form message forwarded from ${email}`);
+  } catch (error) {
+    console.error('[email] Failed to send contact form message:', error.message);
+    throw error;
+  }
+}
+
+module.exports = { sendOrderConfirmation, sendOrderStatusUpdate, sendContactFormMessage };
