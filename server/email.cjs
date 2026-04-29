@@ -94,6 +94,16 @@ function addressHtml(address) {
   return lines.map(l => escapeHtml(l)).join('<br>');
 }
 
+function statusEmoji(status) {
+  switch (status) {
+    case 'confirmed': return '📋';
+    case 'shipped': return '🚚';
+    case 'delivered': return '✅';
+    case 'cancelled': return '❌';
+    default: return '📦';
+  }
+}
+
 function statusMessage(status) {
   switch (status) {
     case 'confirmed': return 'Your order has been confirmed and is being processed.';
@@ -176,7 +186,7 @@ async function sendOrderConfirmation(order, items) {
     await sendEmail({
       from: FROM,
       to: [order.email],
-      subject: `Order #${order.id} Confirmed${recipientName ? ' - Thank You, ' + recipientName : ''}!`,
+      subject: `🛍️ Order #${order.id} Confirmed${recipientName ? ' - Thank You, ' + recipientName : ''}!`,
       html,
     });
 
@@ -210,7 +220,7 @@ async function sendOrderStatusUpdate(order) {
     await sendEmail({
       from: FROM,
       to: [order.email],
-      subject: `Your Order #${order.id} is ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}`,
+      subject: `${statusEmoji(order.status)} Order #${order.id} is Now ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}`,
       html,
     });
 
