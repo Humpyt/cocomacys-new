@@ -20,6 +20,7 @@ import {
   resolveMenCategorySlug,
   MEN_CATEGORY_LABELS,
 } from '../lib/navigation';
+import { BrandMarquee } from '../components/BrandMarquee';
 
 interface Product {
   id: string;
@@ -101,6 +102,7 @@ export function Men() {
   const carouselTitle = activeCategoryLabel ? `Trending in ${activeCategoryLabel}` : "Trending in Men's";
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -113,8 +115,19 @@ export function Men() {
           : { gender: 'men' as const };
         const { products } = await api.products.list(listParams);
         setProducts(products.map(mapProduct));
+        const seen = new Set<string>();
+        const unique: string[] = [];
+        for (const p of products) {
+          const b = p.brand?.trim();
+          if (b && !seen.has(b)) {
+            seen.add(b);
+            unique.push(b);
+          }
+        }
+        setBrands(unique);
       } catch {
         setProducts([]);
+        setBrands([]);
       } finally {
         setLoading(false);
       }
@@ -183,17 +196,7 @@ export function Men() {
         </div>
       )}
 
-      {/* Featured Brands */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-bold mb-8 text-center">Featured Brands</h2>
-        <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center opacity-70">
-          <h3 className="text-2xl font-serif font-bold tracking-widest">POLO RALPH LAUREN</h3>
-          <h3 className="text-2xl font-serif font-bold tracking-widest">TOMMY HILFIGER</h3>
-          <h3 className="text-2xl font-serif font-bold tracking-widest">CALVIN KLEIN</h3>
-          <h3 className="text-2xl font-serif font-bold tracking-widest">HUGO BOSS</h3>
-          <h3 className="text-2xl font-serif font-bold tracking-widest">LEVI'S</h3>
-        </div>
-      </div>
+      {brands.length > 0 && <BrandMarquee brands={brands} />}
     </main>
   );
 }

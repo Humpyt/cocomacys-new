@@ -43,15 +43,15 @@ export function Footer() {
             <ul className="space-y-3 text-gray-300">
               <li className="flex items-start gap-2">
                 <MapPin size={16} className="mt-0.5 shrink-0" />
-                <span>Kampala Road, Kampala<br />Uganda</span>
+                <span>Forest Mall - Lugogo<br />Shop BF-10, Kampala</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={16} className="shrink-0" />
-                <span>+256 700 000000</span>
+                <a href="tel:+256774974933" className="hover:underline">+256 774 974933</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={16} className="shrink-0" />
-                <span>hello@cocofashionbrands.com</span>
+                <a href="mailto:fashionbrandsintl@gmail.com" className="hover:underline">fashionbrandsintl@gmail.com</a>
               </li>
             </ul>
             <h3 className="font-bold mt-6 mb-3">Follow Us</h3>
