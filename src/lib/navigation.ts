@@ -11,6 +11,7 @@ export const WOMEN_CATEGORY_LABELS: Record<WomenCategorySlug, string> = {
   tops: 'Tops',
   jeans: 'Jeans',
   waitcoats: 'Coats & Jackets',
+  coats: 'Coats',
 };
 
 export const MEN_CATEGORY_LABELS: Record<MenCategorySlug, string> = {
@@ -33,7 +34,8 @@ const WOMEN_CATEGORY_ALIASES: Record<string, WomenCategorySlug> = {
   waistcoats: 'waitcoats',
   waistcoat: 'waitcoats',
   waitcoats: 'waitcoats',
-  coats: 'waitcoats',
+  coats: 'coats',
+  'ladies-coats': 'coats',
   jackets: 'waitcoats',
   'coats-jackets': 'waitcoats',
 };
@@ -89,6 +91,7 @@ const CATEGORY_LABEL_OVERRIDES: Record<string, string> = {
   'women_blouses': 'Women Blouses',
   'women_dresses': 'Women Dresses',
   'women_waist-coats': 'Women Waist-Coats',
+  'ladies-coats': 'Ladies Coats',
   'men_shoes': 'Men Shoes',
   'men_shirts': 'Men Shirts',
   'men_t-shirts': 'Men T-Shirts',

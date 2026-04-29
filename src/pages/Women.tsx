@@ -57,6 +57,11 @@ const womensCategories = [
     title: 'Shoes',
     href: getWomenCategoryHref('shoes'),
   },
+  {
+    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&q=80&w=800',
+    title: 'Coats',
+    href: getWomenCategoryHref('coats'),
+  },
 ];
 
 function mapProduct(product: ApiProductRecord): Product {

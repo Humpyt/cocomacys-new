@@ -10,6 +10,7 @@ export const COLLECTION_IDS = {
       tops: 'col_00ca9c5f0c7a62c5251bf67',
       jeans: 'col_d4d05f9d842fc98b48e0747',
       waitcoats: 'col_b4e869f373346e44a1c7c86',
+      coats: 'col_c6dd022affa9008732b4ebb',
     },
   },
   men: {
