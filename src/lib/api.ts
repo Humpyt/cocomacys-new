@@ -100,6 +100,16 @@ export interface AdminOrder {
   updated_at: string;
 }
 
+export interface WishlistItem {
+  id: string;
+  product_id: number;
+  variant_id: string | null;
+  name: string;
+  brand: string | null;
+  price: number;
+  images: string[];
+}
+
 export interface ClearanceItem {
   id: number;
   title: string;
@@ -306,6 +316,23 @@ export const api = {
 
     delete: async (id: number): Promise<void> => {
       await apiFetch(`/products/${id}`, { method: 'DELETE' });
+    },
+  },
+
+  wishlist: {
+    get: async (): Promise<{ wishlist: { id: string; items: WishlistItem[] } | null; items: WishlistItem[] }> => {
+      return apiFetch<{ wishlist: { id: string; items: WishlistItem[] } | null; items: WishlistItem[] }>('/wishlists/mine');
+    },
+
+    addItem: async (productId: number, variantId?: string): Promise<void> => {
+      await apiFetch('/wishlists/mine/items', {
+        method: 'POST',
+        body: JSON.stringify({ product_id: productId, variant_id: variantId }),
+      });
+    },
+
+    removeItem: async (productId: number): Promise<void> => {
+      await apiFetch(`/wishlists/mine/items/${productId}`, { method: 'DELETE' });
     },
   },
 

@@ -3,6 +3,7 @@ import { Star, ChevronRight, Heart, Play } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ProductCarousel } from '../components/ProductCarousel';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import {
   api,
   type ApiProductRecord,
@@ -114,6 +115,7 @@ export function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [activeImage, setActiveImage] = useState(0);
   const { addItem, openDrawer } = useCart();
+  const { toggle, isWishlisted } = useWishlist();
   const [addingToCart, setAddingToCart] = useState(false);
   const [cartError, setCartError] = useState<string | null>(null);
 
@@ -237,8 +239,15 @@ export function ProductPage() {
               ) : (
                 <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">No image</div>
               )}
-              <button className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50">
-                <Heart size={24} className="text-gray-600" />
+              <button
+                className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50"
+                onClick={() => product && toggle(Number(product.id))}
+              >
+                <Heart
+                  size={24}
+                  fill={product && isWishlisted(Number(product.id)) ? "#ef4444" : "none"}
+                  className={product && isWishlisted(Number(product.id)) ? "text-red-500" : "text-gray-600"}
+                />
               </button>
               {discount && (
                 <div className="absolute top-4 left-4 bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">

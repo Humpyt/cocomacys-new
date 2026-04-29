@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { AuthProvider } from './context/AuthContext';
 import { CustomerAuthProvider } from './context/CustomerAuthContext';
 import { Header } from './components/Header';
@@ -30,11 +31,13 @@ import { Login as CustomerLogin } from './pages/customer/Login';
 import { Register as CustomerRegister } from './pages/customer/Register';
 import { Account as CustomerAccount } from './pages/customer/Account';
 import { CustomerOrders } from './pages/customer/Orders';
+import { Wishlist } from './pages/customer/Wishlist';
 
 export default function App() {
   return (
     <AuthProvider>
       <CustomerAuthProvider>
+        <WishlistProvider>
         <CartProvider>
           <Router>
           <Routes>
@@ -52,6 +55,7 @@ export default function App() {
             <Route path="/customer/register" element={<CustomerRegister />} />
             <Route path="/customer/account" element={<><Header /><CustomerAccount /><Footer /></>} />
             <Route path="/customer/orders" element={<><Header /><CustomerOrders /><Footer /></>} />
+            <Route path="/customer/wishlist" element={<><Header /><Wishlist /><Footer /></>} />
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<Login />} />
@@ -169,6 +173,7 @@ export default function App() {
         <CartDrawer />
         </Router>
         </CartProvider>
+        </WishlistProvider>
       </CustomerAuthProvider>
     </AuthProvider>
   );

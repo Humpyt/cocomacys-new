@@ -71,6 +71,7 @@ export function Account() {
             <nav className="mt-6 space-y-2">
               <Link to="/customer/account" className="block font-bold text-sm hover:underline">Account Overview</Link>
               <Link to="/customer/orders" className="block text-sm text-gray-600 hover:text-black hover:underline">My Orders</Link>
+              <Link to="/customer/wishlist" className="block text-sm text-gray-600 hover:text-black hover:underline">My Wishlist</Link>
             </nav>
 
             <button
