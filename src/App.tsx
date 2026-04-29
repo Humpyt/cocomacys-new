@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
@@ -5,33 +6,45 @@ import { AuthProvider } from './context/AuthContext';
 import { CustomerAuthProvider } from './context/CustomerAuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
-import { Home } from './pages/Home';
-import { Women } from './pages/Women';
-import { Men } from './pages/Men';
-import { ProductPage } from './pages/ProductPage';
-import { Contact } from './pages/Contact';
-import { Cart } from './pages/Cart';
-import { Checkout } from './pages/Checkout';
 import { CartDrawer } from './components/CartDrawer';
-// Admin imports
 import { RequireAuth } from './components/admin/RequireAuth';
-import { AdminLayout } from './components/admin/AdminLayout';
-import { Login } from './pages/admin/Login';
-import { Dashboard } from './pages/admin/Dashboard';
-import { Products } from './pages/admin/Products';
-import { ProductForm } from './pages/admin/ProductForm';
-import { HomepageSections } from './pages/admin/HomepageSections';
-import { Orders } from './pages/admin/Orders';
-import { Collections } from './pages/admin/Collections';
-import { CollectionForm } from './pages/admin/CollectionForm';
-import { Clearance } from './pages/admin/Clearance';
-import { Import } from './pages/admin/Import';
-// Customer auth imports
-import { Login as CustomerLogin } from './pages/customer/Login';
-import { Register as CustomerRegister } from './pages/customer/Register';
-import { Account as CustomerAccount } from './pages/customer/Account';
-import { CustomerOrders } from './pages/customer/Orders';
-import { Wishlist } from './pages/customer/Wishlist';
+
+// Storefront pages
+const Home = lazy(() => import('./pages/Home'));
+const Women = lazy(() => import('./pages/Women'));
+const Men = lazy(() => import('./pages/Men'));
+const ProductPage = lazy(() => import('./pages/ProductPage'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+
+// Customer pages
+const CustomerLogin = lazy(() => import('./pages/customer/Login'));
+const CustomerRegister = lazy(() => import('./pages/customer/Register'));
+const CustomerAccount = lazy(() => import('./pages/customer/Account'));
+const CustomerOrders = lazy(() => import('./pages/customer/Orders'));
+const Wishlist = lazy(() => import('./pages/customer/Wishlist'));
+
+// Admin pages
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const Login = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const Products = lazy(() => import('./pages/admin/Products'));
+const ProductForm = lazy(() => import('./pages/admin/ProductForm'));
+const HomepageSections = lazy(() => import('./pages/admin/HomepageSections'));
+const Orders = lazy(() => import('./pages/admin/Orders'));
+const Collections = lazy(() => import('./pages/admin/Collections'));
+const CollectionForm = lazy(() => import('./pages/admin/CollectionForm'));
+const Clearance = lazy(() => import('./pages/admin/Clearance'));
+const Import = lazy(() => import('./pages/admin/Import'));
+
+function PageSkeleton() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black" />
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -40,6 +53,7 @@ export default function App() {
         <WishlistProvider>
         <CartProvider>
           <Router>
+          <Suspense fallback={<PageSkeleton />}>
           <Routes>
             {/* Storefront */}
             <Route path="/" element={<><Header /><Home /><Footer /></>} />
@@ -59,118 +73,20 @@ export default function App() {
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<Login />} />
-            <Route
-              path="/admin"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Dashboard />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/products"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Products />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/products/new"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <ProductForm />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/products/:id/edit"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <ProductForm />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/homepage-sections"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <HomepageSections />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/orders"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Orders />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/collections"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Collections />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/collections/new"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <CollectionForm />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/collections/:id/edit"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <CollectionForm />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/clearance"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Clearance />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/admin/import"
-              element={
-                <RequireAuth>
-                  <AdminLayout>
-                    <Import />
-                  </AdminLayout>
-                </RequireAuth>
-              }
-            />
+            <Route path="/admin" element={<RequireAuth><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/products" element={<RequireAuth><AdminLayout><Products /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/products/new" element={<RequireAuth><AdminLayout><ProductForm /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/products/:id/edit" element={<RequireAuth><AdminLayout><ProductForm /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/homepage-sections" element={<RequireAuth><AdminLayout><HomepageSections /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/orders" element={<RequireAuth><AdminLayout><Orders /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/collections" element={<RequireAuth><AdminLayout><Collections /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/collections/new" element={<RequireAuth><AdminLayout><CollectionForm /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/collections/:id/edit" element={<RequireAuth><AdminLayout><CollectionForm /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/clearance" element={<RequireAuth><AdminLayout><Clearance /></AdminLayout></RequireAuth>} />
+            <Route path="/admin/import" element={<RequireAuth><AdminLayout><Import /></AdminLayout></RequireAuth>} />
           </Routes>
-        <CartDrawer />
+          </Suspense>
+          <CartDrawer />
         </Router>
         </CartProvider>
         </WishlistProvider>

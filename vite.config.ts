@@ -25,5 +25,19 @@ export default defineConfig(({mode}) => {
         '/uploads': { target: 'http://localhost:3001', changeOrigin: true },
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-icons': ['lucide-react'],
+            'vendor-xlsx': ['xlsx'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 500,
+      target: 'esnext',
+      cssMinify: true,
+    },
   };
 });
