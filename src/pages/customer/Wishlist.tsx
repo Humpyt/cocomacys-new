@@ -2,9 +2,11 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { formatCurrency, getProductImage, getProductPrice } from '../../lib/api';
+import { formatCurrency } from '../../lib/api';
 import { getImageSrc } from '../../lib/images';
 import { ProductCard } from '../../components/ProductCard';
+import { CustomerSidebar } from '../../components/CustomerSidebar';
+import { Heart } from 'lucide-react';
 import type { WishlistItem } from '../../lib/api';
 
 function mapToProductCard(item: WishlistItem) {
@@ -32,37 +34,23 @@ export function Wishlist() {
   return (
     <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar */}
-        <aside className="w-full lg:w-64 shrink-0">
-          <div className="bg-gray-50 rounded p-6">
-            <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-xl font-bold mb-4">
-              {customer.name?.[0]?.toUpperCase() || customer.email[0].toUpperCase()}
-            </div>
-            <h2 className="font-bold text-lg">{customer.name || 'Welcome'}</h2>
-            <p className="text-sm text-gray-500">{customer.email}</p>
-
-            <nav className="mt-6 space-y-2">
-              <Link to="/customer/account" className="block text-sm text-gray-600 hover:text-black hover:underline">Account Overview</Link>
-              <Link to="/customer/orders" className="block text-sm text-gray-600 hover:text-black hover:underline">My Orders</Link>
-              <Link to="/customer/wishlist" className="block font-bold text-sm hover:underline">My Wishlist</Link>
-            </nav>
-          </div>
-        </aside>
+        <CustomerSidebar activePage="wishlist" />
 
         {/* Main Content */}
         <div className="flex-1">
-          <h1 className="text-2xl font-serif font-bold mb-6">My Wishlist</h1>
+          <h1 className="text-2xl font-serif font-bold text-gray-900 mb-6">My Wishlist</h1>
 
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-pulse">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="aspect-[3/4] bg-gray-100 rounded"></div>
+                <div key={i} className="aspect-[3/4] bg-gray-100 rounded-lg"></div>
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="text-center py-12 border border-gray-200 rounded">
+            <div className="text-center py-12 bg-white border border-gray-200 rounded-xl">
+              <Heart size={40} className="text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 mb-4">Your wishlist is empty.</p>
-              <Link to="/" className="inline-block bg-black text-white px-6 py-2 font-bold text-sm hover:bg-gray-800">
+              <Link to="/women" className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-700 transition-colors">
                 Start Shopping
               </Link>
             </div>
