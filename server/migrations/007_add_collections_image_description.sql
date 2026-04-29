@@ -1,0 +1,2 @@
+ALTER TABLE collections ADD COLUMN IF NOT EXISTS image TEXT;
+ALTER TABLE collections ADD COLUMN IF NOT EXISTS description TEXT;

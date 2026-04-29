@@ -33,9 +33,12 @@ export interface ApiProductRecord {
 export interface ApiCollectionRecord {
   id: string;
   title: string;
-  handle: string;
+  handle: string | null;
   parent_id: string | null;
+  image: string | null;
+  description: string | null;
   metadata: Record<string, unknown> | null;
+  product_count?: number;
   created_at: string;
   updated_at: string;
 }
@@ -345,14 +348,14 @@ export const api = {
       return apiFetch<ApiCollectionRecord>(`/collections/${id}`);
     },
 
-    create: async (data: { title: string; handle?: string; parent_id?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
+    create: async (data: { title: string; handle?: string; parent_id?: string | null; image?: string | null; description?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
       return apiFetch<ApiCollectionRecord>('/collections', {
         method: 'POST',
         body: JSON.stringify(data),
       });
     },
 
-    update: async (id: string, data: { title?: string; handle?: string; parent_id?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
+    update: async (id: string, data: { title?: string; handle?: string; parent_id?: string | null; image?: string | null; description?: string | null; metadata?: Record<string, unknown> }): Promise<ApiCollectionRecord> => {
       return apiFetch<ApiCollectionRecord>(`/collections/${id}`, {
         method: 'PUT',
         body: JSON.stringify(data),

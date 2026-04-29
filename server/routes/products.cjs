@@ -72,22 +72,31 @@ router.post('/', requireAuth, async (req, res) => {
     const {
       name, brand, description, price, original_price, discount,
       promo, rating, reviews, images, colors, sizes, types,
-      features, details, category
+      features, details, category, collection_id
     } = req.body;
 
     if (!name || !price) {
       return res.status(400).json({ error: 'Name and price are required' });
     }
 
+    // Sync category from collection handle
+    let resolvedCategory = category;
+    if (collection_id) {
+      const col = await pool.query('SELECT handle FROM collections WHERE id = $1', [collection_id]);
+      if (col.rows.length > 0) {
+        resolvedCategory = col.rows[0].handle;
+      }
+    }
+
     const result = await pool.query(
       `INSERT INTO products (name, brand, description, price, original_price, discount,
-        promo, rating, reviews, images, colors, sizes, types, features, details, category)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        promo, rating, reviews, images, colors, sizes, types, features, details, category, collection_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
        promo, rating || 0, reviews || 0, images || [],
        JSON.stringify(colors || []), JSON.stringify(sizes || []),
-       JSON.stringify(types || []), features || [], details, category]
+       JSON.stringify(types || []), features || [], details, resolvedCategory, collection_id || null]
     );
 
     res.status(201).json(result.rows[0]);
@@ -104,8 +113,17 @@ router.put('/:id', requireAuth, async (req, res) => {
     const {
       name, brand, description, price, original_price, discount,
       promo, rating, reviews, images, colors, sizes, types,
-      features, details, category
+      features, details, category, collection_id
     } = req.body;
+
+    // Sync category from collection handle
+    let resolvedCategory = category;
+    if (collection_id) {
+      const col = await pool.query('SELECT handle FROM collections WHERE id = $1', [collection_id]);
+      if (col.rows.length > 0) {
+        resolvedCategory = col.rows[0].handle;
+      }
+    }
 
     const result = await pool.query(
       `UPDATE products SET
@@ -125,15 +143,16 @@ router.put('/:id', requireAuth, async (req, res) => {
         features = COALESCE($14, features),
         details = COALESCE($15, details),
         category = COALESCE($16, category),
+        collection_id = COALESCE($17, collection_id),
         updated_at = NOW()
-       WHERE id = $17
+       WHERE id = $18
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
        promo, rating, reviews, images,
        colors != null ? JSON.stringify(colors) : null,
        sizes != null ? JSON.stringify(sizes) : null,
        types != null ? JSON.stringify(types) : null,
-       features, details, category, id]
+       features, details, resolvedCategory, collection_id, id]
     );
 
     if (result.rows.length === 0) {

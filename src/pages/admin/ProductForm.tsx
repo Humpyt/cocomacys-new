@@ -202,17 +202,6 @@ export function ProductForm() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Category</label>
-              <input
-                type="text"
-                value={form.category}
-                onChange={set('category')}
-                placeholder="e.g. men_t-shirts"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
-              />
-              <p className="mt-1 text-xs text-gray-400">e.g. men_t-shirts, women_dresses</p>
-            </div>
             <div className="sm:col-span-2">
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Description</label>
               <textarea
