@@ -124,6 +124,7 @@ export function Products() {
                           <img
                             src={getImageSrc(img)}
                             alt={product.name}
+                            loading="lazy"
                             className="w-12 h-12 object-cover rounded-lg border border-gray-200"
                           />
                         ) : (

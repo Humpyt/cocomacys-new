@@ -223,7 +223,7 @@ export function ProductPage() {
                   className={`relative aspect-[3/4] border-2 overflow-hidden ${activeImage === idx ? 'border-black' : 'border-transparent hover:border-gray-300'}`}
                   onClick={() => setActiveImage(idx)}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" onError={handleImageFallback} />
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} loading="lazy" className="w-full h-full object-cover" onError={handleImageFallback} />
                 </button>
               ))}
               {images.length > 0 && (
@@ -277,7 +277,7 @@ export function ProductPage() {
             )}
 
             <div className="flex items-baseline gap-2 mb-6">
-              <span className="text-xl font-bold text-orange-600">{price}</span>
+              <span className="text-xl font-bold text-gray-900">{price}</span>
               {discount && <span className="text-orange-600 text-sm">({discount})</span>}
               {originalPrice != null && (
                 <span className="text-gray-500 line-through text-sm">{formatCurrency(originalPrice)}</span>

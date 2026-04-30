@@ -112,6 +112,7 @@ export function CustomerOrders() {
                               <img
                                 src={item.images[0]}
                                 alt={item.name}
+                                loading="lazy"
                                 className="w-full h-full object-cover"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                               />

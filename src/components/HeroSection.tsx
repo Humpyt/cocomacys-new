@@ -50,6 +50,7 @@ export function HeroSection() {
             <img
               src={slide.image}
               alt={slide.title}
+              fetchPriority={i === 0 ? "high" : undefined}
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-black/20" />
@@ -128,6 +129,7 @@ export function HeroSection() {
           <img
             src="/homeposters/ladies-shoes.png"
             alt="Women's Shoes"
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -142,6 +144,7 @@ export function HeroSection() {
           <img
             src="/homeposters/women-blouse.png"
             alt="Women's Blouses"
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -156,6 +159,7 @@ export function HeroSection() {
           <img
             src="/homeposters/handbag.png"
             alt="Handbags"
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -170,6 +174,7 @@ export function HeroSection() {
           <img
             src="/homeposters/mens-shirt.png"
             alt="Men's Shirts"
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

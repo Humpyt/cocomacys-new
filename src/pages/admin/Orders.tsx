@@ -130,7 +130,7 @@ export function Orders() {
                                 {(order.items || []).map(item => (
                                   <div key={item.id} className="flex items-center gap-3">
                                     {item.images?.[0] && (
-                                      <img src={item.images[0]} alt={item.name}
+                                      <img src={item.images[0]} alt={item.name} loading="lazy"
                                         className="w-10 h-10 rounded object-cover" />
                                     )}
                                     <div>

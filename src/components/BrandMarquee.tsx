@@ -1,8 +1,10 @@
+import { memo } from 'react';
+
 interface BrandMarqueeProps {
   brands: string[];
 }
 
-export function BrandMarquee({ brands }: BrandMarqueeProps) {
+export const BrandMarquee = memo(function BrandMarquee({ brands }: BrandMarqueeProps) {
   if (brands.length === 0) return null;
 
   const doubled = [...brands, ...brands];
@@ -24,4 +26,4 @@ export function BrandMarquee({ brands }: BrandMarqueeProps) {
       </div>
     </div>
   );
-}
+});

@@ -63,6 +63,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <img
                   src={user.avatar_url}
                   alt={user.name}
+                  loading="lazy"
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (

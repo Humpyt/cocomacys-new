@@ -91,6 +91,7 @@ export function ImageUploader({ value = [], onChange, maxImages = 10 }: ImageUpl
               <img
                 src={url}
                 alt={`Upload ${index + 1}`}
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
               <button

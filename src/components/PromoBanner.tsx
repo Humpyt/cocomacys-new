@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 interface PromoBannerProps {
@@ -11,7 +12,7 @@ interface PromoBannerProps {
   height?: string;
 }
 
-export function PromoBanner({
+export const PromoBanner = memo(function PromoBanner({
   image,
   title,
   subtitle,
@@ -31,9 +32,10 @@ export function PromoBanner({
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 font-sans">
       <Link to={to || '/product'} className={`relative w-full ${height} bg-gray-100 overflow-hidden group cursor-pointer block`}>
-        <img 
-          src={image} 
-          alt={title} 
+        <img
+          src={image}
+          alt={title}
+          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className={`absolute inset-0 flex flex-col justify-center p-6 bg-black/20 ${alignClasses[align]} ${textColor}`}>
@@ -46,4 +48,4 @@ export function PromoBanner({
       </Link>
     </div>
   );
-}
+});

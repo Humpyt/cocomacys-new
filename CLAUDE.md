@@ -67,7 +67,8 @@ src/
 ├── context/
 │   ├── AuthContext.tsx       # Admin Google OAuth state
 │   ├── CustomerAuthContext.tsx # Customer Google OAuth state
-│   └── CartContext.tsx       # Cart state and operations
+│   ├── CartContext.tsx       # Cart state and operations
+│   └── WishlistContext.tsx   # Wishlist state and operations
 ├── lib/
 │   ├── api.ts               # API client with typed helpers for all endpoints
 │   ├── images.ts            # Image URL helpers
@@ -96,7 +97,8 @@ src/
 │       ├── Login.tsx        # Customer Google OAuth login
 │       ├── Register.tsx     # Customer Google OAuth register
 │       ├── Account.tsx      # Customer account overview
-│       └── Orders.tsx       # Customer order history
+│       ├── Orders.tsx       # Customer order history
+│       └── Wishlist.tsx     # Customer wishlist
 ├── test/
 │   └── setup.ts            # Vitest setup (jest-dom matchers, cleanup)
 └── components/
@@ -130,33 +132,39 @@ src/
 server/
 ├── index.cjs                # Express entry (port 3001)
 ├── db.cjs                   # PostgreSQL connection pool
+├── email.cjs                # Transactional email sending (Nodemailer)
 ├── middleware/
 │   └── requireAuth.cjs      # Protects admin API routes
-├── migrations/              # SQL migrations
+├── migrations/              # SQL migrations (run in numeric order)
 │   ├── 001_create_collections.sql
 │   ├── 002_create_carts_orders.sql
 │   ├── 003_create_customers.sql
-│   └── 003_create_homepage_sections.sql
+│   ├── 003_create_homepage_sections.sql
+│   ├── 004_alter_customers_google_auth.sql
+│   ├── 005_alter_orders_id_format.sql
+│   ├── 006_create_wishlists.sql
+│   └── 007_add_collections_image_description.sql
 ├── routes/
-│   ├── auth.cjs             # Google OAuth + session management
+│   ├── auth.cjs             # Google OAuth (admin + customer) + session management
 │   ├── products.cjs         # Full CRUD at /api/products
 │   ├── collections.cjs      # Collections API at /api/collections
 │   ├── cart.cjs             # Cart API at /api/carts (exports factory: createCartRouter({ pool }))
 │   ├── clearance.cjs        # Clearance API at /api/clearance (exports factory: createClearanceRouter({ pool }))
 │   ├── orders.cjs           # Orders API at /api/orders (customer + admin)
 │   ├── homepage-sections.cjs # Homepage section CRUD at /api/homepage-sections
+│   ├── wishlist.cjs         # Wishlist API at /api/wishlists (exports factory: createWishlistRouter({ pool }))
 │   ├── upload.cjs           # Image upload at /api/upload
 │   ├── import.cjs           # CSV import at /api/import
-│   └── email.cjs            # Transactional email sending (Nodemailer)
+│   └── contact.cjs          # Contact form at /api/contact
 └── tests/                   # Backend smoke tests
 cocomacys.sql                # Base schema (products, admin_users, session)
 ```
 
 **Key patterns:**
-- `cart.cjs` and `clearance.cjs` export **factory functions** (`createCartRouter({ pool })`, `createClearanceRouter({ pool })`) that accept a database pool for testability. All other route files import `pool` directly from `../db.cjs`.
+- `cart.cjs`, `clearance.cjs`, and `wishlist.cjs` export **factory functions** (`createCartRouter({ pool })`, `createClearanceRouter({ pool })`, `createWishlistRouter({ pool })`) that accept a database pool for testability. All other route files import `pool` directly from `../db.cjs`.
 - In `server/index.cjs`, `clearanceRoutes` and `homepageSectionsRoutes` are mounted with `requireAuth` middleware at the router level, making ALL their endpoints admin-only.
 - The server serves the Vite-built `dist/` directory as a fallback for production (SPA client-side routing).
-- `server/email.cjs` exports `sendOrderConfirmation()` and `sendOrderStatusUpdate()`. Both are called **fire-and-forget** (no `await`) from route handlers so email failures never block the API response.
+- `server/email.cjs` exports `sendOrderConfirmation()`, `sendOrderStatusUpdate()`, and `sendContactFormMessage()`. The order email functions are called **fire-and-forget** (no `await`) from route handlers so email failures never block the API response.
 
 ### Path Alias
 The `@` alias maps to the project root (configured in both `vite.config.ts` and `tsconfig.json`):
@@ -192,6 +200,10 @@ import { api } from '@/src/lib/api';
 | GET | `/api/orders/admin` | Admin | List all orders (?status=, ?limit=, ?offset=) |
 | GET | `/api/orders/:id` | Public | Get single order with items |
 | PUT | `/api/orders/:id/status` | Admin | Update order status |
+| GET | `/api/wishlists/mine` | Customer | Get customer wishlist with items |
+| POST | `/api/wishlists/mine/items` | Customer | Add item to wishlist |
+| DELETE | `/api/wishlists/mine/items/:productId` | Customer | Remove item from wishlist |
+| POST | `/api/contact` | Public | Submit contact form message |
 | GET | `/api/homepage-sections` | Admin | List all homepage sections |
 | POST | `/api/homepage-sections` | Admin | Create a homepage section |
 | PUT | `/api/homepage-sections/:key` | Admin | Update section title |
@@ -201,10 +213,14 @@ import { api } from '@/src/lib/api';
 | POST | `/api/upload/multiple` | Admin | Upload multiple images |
 | POST | `/api/import` | Admin | Bulk CSV product import |
 | GET | `/api/import/template` | Admin | Download CSV template |
-| GET | `/auth/google` | Public | Start Google OAuth |
-| GET | `/auth/google/callback` | Public | OAuth callback |
+| GET | `/auth/google` | Public | Start admin Google OAuth |
+| GET | `/auth/google/callback` | Public | Admin OAuth callback |
 | GET | `/auth/me` | Public | Get current admin user |
-| POST | `/auth/logout` | Public | Log out |
+| POST | `/auth/logout` | Public | Admin log out |
+| GET | `/auth/customer/google` | Public | Start customer Google OAuth |
+| GET | `/auth/customer/google/callback` | Public | Customer OAuth callback |
+| GET | `/auth/customer/me` | Public | Get current customer user |
+| POST | `/auth/customer/logout` | Public | Customer log out |
 
 ### Database Schema
 - **`products`** — id, name, brand, description, details, price, original_price, discount, promo, rating, reviews, images (TEXT[]), colors (JSONB), sizes (JSONB), types (JSONB), features (TEXT[]), category, collection_id, created_at, updated_at
@@ -213,11 +229,13 @@ import { api } from '@/src/lib/api';
 - **`cart_items`** — id, cart_id, product_id, variant_id, quantity, unit_price, created_at
 - **`orders`** — id, cart_id, customer_id, email, shipping_address (JSONB), billing_address (JSONB), shipping_method (JSONB), subtotal, tax, total, status, payment_status, created_at, updated_at
 - **`customers`** — id, google_id, email, name, avatar_url, created_at
+- **`wishlists`** — id, customer_id (FK→customers), created_at, updated_at
+- **`wishlist_items`** — id, wishlist_id (FK→wishlists), product_id (FK→products), variant_id, created_at (UNIQUE on wishlist_id + product_id)
 - **`homepage_sections`** — id, section_key, title, product_ids (INTEGER[]), created_at, updated_at
 - **`admin_users`** — Google OAuth users (google_id, email, name, avatar_url)
 - **`session`** — Express session storage via `connect-pg-simple`
 
-**Schema setup order:** `cocomacys.sql` → `server/migrations/001_create_collections.sql` → `server/migrations/002_create_carts_orders.sql` → `server/migrations/003_create_customers.sql` → `server/migrations/003_create_homepage_sections.sql`
+**Schema setup order:** `cocomacys.sql` → then all migrations in `server/migrations/` in numeric order (001–007)
 
 ## Environment Variables
 
@@ -241,12 +259,13 @@ PORT=3001
 **Required for transactional emails (`server/email.cjs`):**
 ```bash
 SMTP_HOST=smtp.gmail.com
-SMTP_PORT=465
+SMTP_PORT=587
 SMTP_USER=your_email@gmail.com
 SMTP_PASS=your_16_char_app_password   # Generate at https://myaccount.google.com/apppasswords
 EMAIL_FROM=Coco Fashion Brands <cocofashionbrands@gmail.com>
 ```
-Gmail SMTP requires 2FA enabled on the Google account and an app-specific password (not your regular password).
+Gmail SMTP uses STARTTLS on port 587 (secure: false). Port 465 requires `secure: true` in the transporter config.
+Gmail requires 2FA enabled on the Google account and an app-specific password (not your regular password).
 Free tier: 500 emails/day. For higher volume, replace SMTP_HOST/SMTP_PORT with any other provider — Nodemailer is transport-agnostic.
 
 **Optional for AI features (used by `vite.config.ts` define):**
@@ -263,6 +282,10 @@ GEMINI_API_KEY=your_gemini_key
    psql -U postgres -d cocomacys -f server/migrations/002_create_carts_orders.sql
    psql -U postgres -d cocomacys -f server/migrations/003_create_customers.sql
    psql -U postgres -d cocomacys -f server/migrations/003_create_homepage_sections.sql
+   psql -U postgres -d cocomacys -f server/migrations/004_alter_customers_google_auth.sql
+   psql -U postgres -d cocomacys -f server/migrations/005_alter_orders_id_format.sql
+   psql -U postgres -d cocomacys -f server/migrations/006_create_wishlists.sql
+   psql -U postgres -d cocomacys -f server/migrations/007_add_collections_image_description.sql
    ```
 2. **Google OAuth:** Create credentials at console.cloud.google.com, add callback URL
 3. **Environment:** Copy `.env.example` to `.env`, fill in ALL values (see Environment Variables section above)
