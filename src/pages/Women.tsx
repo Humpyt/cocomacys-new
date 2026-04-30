@@ -39,26 +39,31 @@ const womensCategories = [
   {
     image: '/women/dresses.jpeg',
     title: 'Dresses',
+    slug: 'dresses',
     href: getWomenCategoryHref('dresses'),
   },
   {
     image: '/women/women-blouse.png',
     title: 'Blouses',
+    slug: 'blouses',
     href: getWomenCategoryHref('blouses'),
   },
   {
     image: '/women/handbag.png',
     title: 'Handbags',
+    slug: 'bags',
     href: getWomenCategoryHref('bags'),
   },
   {
     image: '/women/ladies-shoes.png',
     title: 'Shoes',
+    slug: 'shoes',
     href: getWomenCategoryHref('shoes'),
   },
   {
     image: '/uploads/women_dkny_dresses_16_us_90/image_1.jpeg',
     title: 'Coats',
+    slug: 'coats',
     href: getWomenCategoryHref('coats'),
   },
 ];
@@ -89,6 +94,7 @@ export function Women() {
     ? COLLECTION_IDS.women.subcategories[activeCategory]
     : COLLECTION_IDS.women.id;
   const activeCategoryLabel = activeCategory ? WOMEN_CATEGORY_LABELS[activeCategory] : null;
+  const hasActiveCategory = activeCategory !== null;
   const pageTitle = activeCategoryLabel ? `Women's ${activeCategoryLabel}` : "Women's Clothing";
   const sectionTitle = activeCategoryLabel ? `Shop ${activeCategoryLabel}` : 'Shop by Category';
 
@@ -194,18 +200,33 @@ export function Women() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <h2 className="text-2xl font-bold mb-6">{sectionTitle}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {womensCategories.map((category) => (
-            <Link to={category.href} key={category.title} className="group cursor-pointer">
-              <div className="aspect-[3/4] overflow-hidden mb-3">
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <h3 className="font-bold text-center group-hover:underline">{category.title}</h3>
-            </Link>
-          ))}
+          {womensCategories.map((category) => {
+            const isActive = hasActiveCategory && category.slug === activeCategory;
+            return (
+              <Link
+                to={category.href}
+                key={category.title}
+                aria-current={isActive ? 'page' : undefined}
+                className={`group cursor-pointer transition-opacity duration-300 ${
+                  hasActiveCategory && !isActive ? 'opacity-50 hover:opacity-100' : 'opacity-100'
+                }`}
+              >
+                <div className={`aspect-[3/4] overflow-hidden mb-3 ${isActive ? 'ring-2 ring-black ring-offset-2' : ''}`}>
+                  <img
+                    src={category.image}
+                    alt={category.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className={`font-bold text-center ${isActive ? '' : 'group-hover:underline'}`}>
+                  {category.title}
+                </h3>
+                {isActive && (
+                  <div className="mt-1.5 mx-auto w-4 h-0.5 bg-black" aria-hidden="true" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
 

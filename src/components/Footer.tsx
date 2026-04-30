@@ -29,7 +29,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold mb-4">About Cocomacys</h3>
+            <h3 className="font-bold mb-4">About Coco Fashion</h3>
             <ul className="space-y-2 text-gray-300">
               <li><Link to="/contact" className="hover:underline">Our Story</Link></li>
               <li><Link to="/contact" className="hover:underline">Store Locations</Link></li>
