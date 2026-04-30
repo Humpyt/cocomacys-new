@@ -10,33 +10,33 @@ import { CartDrawer } from './components/CartDrawer';
 import { RequireAuth } from './components/admin/RequireAuth';
 
 // Storefront pages
-const Home = lazy(() => import('./pages/Home'));
-const Women = lazy(() => import('./pages/Women'));
-const Men = lazy(() => import('./pages/Men'));
-const ProductPage = lazy(() => import('./pages/ProductPage'));
-const Contact = lazy(() => import('./pages/Contact'));
-const Cart = lazy(() => import('./pages/Cart'));
-const Checkout = lazy(() => import('./pages/Checkout'));
+const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
+const Women = lazy(() => import('./pages/Women').then(m => ({ default: m.Women })));
+const Men = lazy(() => import('./pages/Men').then(m => ({ default: m.Men })));
+const ProductPage = lazy(() => import('./pages/ProductPage').then(m => ({ default: m.ProductPage })));
+const Contact = lazy(() => import('./pages/Contact').then(m => ({ default: m.Contact })));
+const Cart = lazy(() => import('./pages/Cart').then(m => ({ default: m.Cart })));
+const Checkout = lazy(() => import('./pages/Checkout').then(m => ({ default: m.Checkout })));
 
 // Customer pages
-const CustomerLogin = lazy(() => import('./pages/customer/Login'));
-const CustomerRegister = lazy(() => import('./pages/customer/Register'));
-const CustomerAccount = lazy(() => import('./pages/customer/Account'));
-const CustomerOrders = lazy(() => import('./pages/customer/Orders'));
-const Wishlist = lazy(() => import('./pages/customer/Wishlist'));
+const CustomerLogin = lazy(() => import('./pages/customer/Login').then(m => ({ default: m.Login })));
+const CustomerRegister = lazy(() => import('./pages/customer/Register').then(m => ({ default: m.Register })));
+const CustomerAccount = lazy(() => import('./pages/customer/Account').then(m => ({ default: m.Account })));
+const CustomerOrders = lazy(() => import('./pages/customer/Orders').then(m => ({ default: m.CustomerOrders })));
+const Wishlist = lazy(() => import('./pages/customer/Wishlist').then(m => ({ default: m.Wishlist })));
 
 // Admin pages
-const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
-const Login = lazy(() => import('./pages/admin/Login'));
-const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
-const Products = lazy(() => import('./pages/admin/Products'));
-const ProductForm = lazy(() => import('./pages/admin/ProductForm'));
-const HomepageSections = lazy(() => import('./pages/admin/HomepageSections'));
-const Orders = lazy(() => import('./pages/admin/Orders'));
-const Collections = lazy(() => import('./pages/admin/Collections'));
-const CollectionForm = lazy(() => import('./pages/admin/CollectionForm'));
-const Clearance = lazy(() => import('./pages/admin/Clearance'));
-const Import = lazy(() => import('./pages/admin/Import'));
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout').then(m => ({ default: m.AdminLayout })));
+const Login = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.Login })));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.Dashboard })));
+const Products = lazy(() => import('./pages/admin/Products').then(m => ({ default: m.Products })));
+const ProductForm = lazy(() => import('./pages/admin/ProductForm').then(m => ({ default: m.ProductForm })));
+const HomepageSections = lazy(() => import('./pages/admin/HomepageSections').then(m => ({ default: m.HomepageSections })));
+const Orders = lazy(() => import('./pages/admin/Orders').then(m => ({ default: m.Orders })));
+const Collections = lazy(() => import('./pages/admin/Collections').then(m => ({ default: m.Collections })));
+const CollectionForm = lazy(() => import('./pages/admin/CollectionForm').then(m => ({ default: m.CollectionForm })));
+const Clearance = lazy(() => import('./pages/admin/Clearance').then(m => ({ default: m.Clearance })));
+const Import = lazy(() => import('./pages/admin/Import').then(m => ({ default: m.Import })));
 
 function PageSkeleton() {
   return (
