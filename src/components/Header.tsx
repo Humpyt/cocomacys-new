@@ -20,6 +20,7 @@ export function Header() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const searchRefMobile = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -50,7 +51,7 @@ export function Header() {
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       setSearchOpen(false);
-      searchInputRef.current?.blur();
+      (e.currentTarget as HTMLInputElement).blur();
     }
   };
 
@@ -63,7 +64,9 @@ export function Header() {
   // Close search on click outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+      const inDesktop = searchRef.current?.contains(e.target as Node);
+      const inMobile = searchRefMobile.current?.contains(e.target as Node);
+      if (!inDesktop && !inMobile) {
         setSearchOpen(false);
       }
     };
@@ -230,6 +233,73 @@ export function Header() {
               </span>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Search */}
+      <div className="px-4 pb-3 lg:hidden" ref={searchRefMobile}>
+        <div className="relative">
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="What are you looking for?"
+            value={searchQuery}
+            onChange={e => handleSearchChange(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
+            className="w-full border border-gray-300 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-black"
+          />
+          <Search className="absolute right-3 top-2.5 text-gray-400" size={18} />
+
+          {searchOpen && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden">
+              {isSearching ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="py-6 text-center text-gray-500 text-sm">
+                  No products found for "{searchQuery}"
+                </div>
+              ) : (
+                <>
+                  <div className="max-h-[340px] overflow-y-auto">
+                    {searchResults.map(product => (
+                      <button
+                        key={product.id}
+                        onClick={() => selectResult(Number(product.id))}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-50 last:border-b-0"
+                      >
+                        <div className="w-10 h-10 shrink-0 rounded-lg bg-gray-100 overflow-hidden">
+                          <img
+                            src={getImageSrc(product.images?.[0])}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const t = e.target as HTMLImageElement;
+                              t.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                          <p className="text-xs text-gray-500">{product.brand || product.category || '—'}</p>
+                        </div>
+                        <p className="text-sm font-semibold text-gray-900 shrink-0">
+                          {formatCurrency(getProductPrice(product))}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="border-t border-gray-100 px-4 py-2 bg-gray-50">
+                    <p className="text-xs text-gray-400">
+                      {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
