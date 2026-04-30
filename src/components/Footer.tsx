@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Phone, Mail, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BackToTop } from './BackToTop';
 
 export function Footer() {
   return (
@@ -73,6 +74,7 @@ export function Footer() {
           <p>© 2026 Coco's Fashion Brands. All rights reserved.</p>
         </div>
       </div>
+      <BackToTop />
     </footer>
   );
 }
