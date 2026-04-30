@@ -29,7 +29,6 @@ function toCardProps(product: ApiProductRecord) {
     price: formatCurrency(price),
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
-    colors: product.colors.length > 0 ? product.colors : undefined,
   };
 }
 

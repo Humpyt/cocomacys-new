@@ -33,7 +33,6 @@ interface Product {
   promo?: string;
   rating: number;
   reviews: number;
-  colors?: string[];
 }
 
 const womensCategories = [
@@ -80,7 +79,6 @@ function mapProduct(product: ApiProductRecord): Product {
     promo: product.promo ?? undefined,
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
-    colors: product.colors.length > 0 ? product.colors : undefined,
   };
 }
 

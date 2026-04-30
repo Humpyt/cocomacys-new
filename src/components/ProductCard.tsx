@@ -1,6 +1,5 @@
 import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getColorHex } from '../lib/images';
 
 export interface ProductCardProps {
   id?: string;
@@ -13,13 +12,12 @@ export interface ProductCardProps {
   discount?: string;
   rating: number;
   reviews: number;
-  colors?: string[];
   promo?: string;
   isWishlisted?: boolean;
   onToggleWishlist?: (productId: number) => void;
 }
 
-export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, colors, promo, isWishlisted, onToggleWishlist }: ProductCardProps) {
+export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, promo, isWishlisted, onToggleWishlist }: ProductCardProps) {
   const productUrl = href || (id != null ? `/product?id=${encodeURIComponent(id)}` : '/product');
   const numericId = id != null ? Number(id) : 0;
   return (
@@ -58,15 +56,6 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
                 ))}
               </div>
               <span className="text-xs text-gray-500">{rating} ({reviews})</span>
-            </div>
-          )}
-          
-          {colors && colors.length > 0 && (
-            <div className="flex space-x-1 mt-1">
-              {colors.map((color, i) => (
-                <div key={i} className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: getColorHex(color) }}></div>
-              ))}
-              {colors.length > 4 && <span className="text-xs text-gray-500 ml-1">+{colors.length - 4}</span>}
             </div>
           )}
         </div>

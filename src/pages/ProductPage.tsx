@@ -15,7 +15,7 @@ import {
   getProductRating,
   getErrorMessage,
 } from '../lib/api';
-import { getImageSrc, handleImageFallback, getColorHex, getColorLabel } from '../lib/images';
+import { getImageSrc, handleImageFallback } from '../lib/images';
 import { formatProductLabel } from '../lib/navigation';
 
 interface RelatedProduct {
@@ -29,7 +29,6 @@ interface RelatedProduct {
   discount?: string;
   rating: number;
   reviews: number;
-  colors?: string[];
   promo?: string;
 }
 
@@ -48,7 +47,6 @@ function mapRelatedProduct(product: ApiProductRecord): RelatedProduct {
     discount: getProductDiscountLabel(product),
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
-    colors: product.colors.length > 0 ? product.colors : undefined,
     promo: product.promo ?? undefined,
   };
 }
@@ -110,7 +108,6 @@ export function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedColor, setSelectedColor] = useState<string>('');
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [activeImage, setActiveImage] = useState(0);
@@ -135,7 +132,6 @@ export function ProductPage() {
     setProduct(null);
     setBrandProducts([]);
     setCategoryProducts([]);
-    setSelectedColor('');
     setSelectedType('');
     setSelectedSize('');
     setActiveImage(0);
@@ -145,7 +141,6 @@ export function ProductPage() {
         const p = await api.products.get(productId);
         setProduct(p);
 
-        if (p.colors.length > 0) setSelectedColor(p.colors[0]);
         if (p.types.length > 0) setSelectedType(p.types[0]);
         if (p.sizes.length > 0) setSelectedSize(p.sizes[0]);
 
@@ -194,7 +189,6 @@ export function ProductPage() {
   const discount = getProductDiscountLabel(product);
   const rating = getProductRating(product);
   const images = product.images.length > 0 ? product.images : [];
-  const colors = product.colors.map((c) => ({ name: getColorLabel(c), hex: getColorHex(c) }));
   const types = product.types.length > 0 ? product.types : ['Regular'];
   const sizes = product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
   const features = product.features ?? [];
@@ -284,25 +278,6 @@ export function ProductPage() {
               )}
               <span className="text-xs underline cursor-pointer ml-2">Details</span>
             </div>
-
-            {/* Color Selection */}
-            {colors.length > 0 && (
-              <div className="mb-6">
-                <p className="font-bold text-sm mb-3">Color: <span className="font-normal">{getColorLabel(selectedColor)}</span></p>
-                <div className="flex flex-wrap gap-2">
-                  {colors.map(c => (
-                    <button
-                      key={c.name}
-                      className={`w-10 h-10 rounded-full border-2 p-0.5 ${selectedColor === c.name ? 'border-black' : 'border-transparent'}`}
-                      onClick={() => setSelectedColor(c.name)}
-                      title={c.name}
-                    >
-                      <div className="w-full h-full rounded-full border border-gray-200" style={{ backgroundColor: c.hex }}></div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Type Selection */}
             {types.length > 0 && (
