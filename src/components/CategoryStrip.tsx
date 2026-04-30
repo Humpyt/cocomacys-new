@@ -57,8 +57,7 @@ export function CategoryStrip({ sections }: CategoryStripProps) {
                     <img
                       src={section.image}
                       alt={section.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
+                                           className="w-full h-full object-cover"
                     />
                   </div>
                   <span className="text-xs font-medium text-center text-gray-800 group-hover:underline">

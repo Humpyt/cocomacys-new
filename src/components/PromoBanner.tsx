@@ -34,8 +34,7 @@ export function PromoBanner({
         <img
           src={image}
           alt={title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className={`absolute inset-0 flex flex-col justify-center p-6 bg-black/20 ${alignClasses[align]} ${textColor}`}>
           <h2 className="text-3xl md:text-5xl font-serif font-bold mb-2 leading-tight" dangerouslySetInnerHTML={{ __html: title }}></h2>

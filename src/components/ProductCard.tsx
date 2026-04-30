@@ -25,7 +25,7 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
   return (
     <Link to={productUrl} className="flex flex-col group cursor-pointer font-sans min-w-[200px] max-w-[280px]">
       <div className="relative aspect-[3/4] mb-3 overflow-hidden bg-gray-100">
-        <img src={image} alt={name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img src={image} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <button
           className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-50"
           onClick={(e) => {

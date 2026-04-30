@@ -240,8 +240,7 @@ export function Checkout() {
                         <img
                           src={getImageSrc(item.images?.[0])}
                           alt={item.name}
-                          loading="lazy"
-                          onError={handleImageFallback}
+                                                   onError={handleImageFallback}
                           className="w-full h-full object-cover"
                         />
                       </div>

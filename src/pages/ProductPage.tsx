@@ -223,7 +223,7 @@ export function ProductPage() {
                   className={`relative aspect-[3/4] border-2 overflow-hidden ${activeImage === idx ? 'border-black' : 'border-transparent hover:border-gray-300'}`}
                   onClick={() => setActiveImage(idx)}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} loading="lazy" className="w-full h-full object-cover" onError={handleImageFallback} />
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" onError={handleImageFallback} />
                 </button>
               ))}
               {images.length > 0 && (

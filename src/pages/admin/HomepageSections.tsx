@@ -222,8 +222,7 @@ export function HomepageSections() {
                         <img
                           src={getImageSrc(product.images[0])}
                           alt={product.name}
-                          loading="lazy"
-                          className="w-8 h-8 rounded object-cover shrink-0"
+                                                   className="w-8 h-8 rounded object-cover shrink-0"
                         />
                       ) : (
                         <div className="w-8 h-8 rounded bg-gray-200 shrink-0" />
@@ -297,8 +296,7 @@ export function HomepageSections() {
                         <img
                           src={getImageSrc(product.images[0])}
                           alt={product.name}
-                          loading="lazy"
-                          className="w-10 h-10 rounded object-cover shrink-0"
+                                                   className="w-10 h-10 rounded object-cover shrink-0"
                         />
                       ) : (
                         <div className="w-10 h-10 rounded bg-gray-100 shrink-0" />

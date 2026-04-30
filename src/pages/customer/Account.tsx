@@ -157,8 +157,7 @@ export function Account() {
                         <img
                           src={order.items[0].images[0]}
                           alt={order.items[0].name}
-                          loading="lazy"
-                          className="w-full h-full object-cover"
+                                                   className="w-full h-full object-cover"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (

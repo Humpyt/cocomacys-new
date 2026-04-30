@@ -160,8 +160,7 @@ export function Home() {
             <img
               src="/horizontal_poster.jpg"
               alt="Men's Shirts Collection"
-              loading="lazy"
-              className="w-full h-full object-cover min-h-[320px] md:min-h-[400px]"
+                           className="w-full h-full object-cover min-h-[320px] md:min-h-[400px]"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/30 to-transparent" />
           </div>

@@ -180,7 +180,7 @@ export function Collections() {
                   {/* Icon or thumbnail */}
                   <div className="w-10 h-10 shrink-0 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
                     {c.image ? (
-                      <img src={c.image} alt="" loading="lazy" className="w-full h-full object-cover" />
+                      <img src={c.image} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <Layers size={18} className="text-gray-400" />
                     )}
