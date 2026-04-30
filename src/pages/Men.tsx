@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ProductCarousel } from '../components/ProductCarousel';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { ProductCard } from '../components/ProductCard';
 import { PromoBanner } from '../components/PromoBanner';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
@@ -97,25 +97,36 @@ export function Men() {
   const activeCategoryLabel = activeCategory ? MEN_CATEGORY_LABELS[activeCategory] : null;
   const pageTitle = activeCategoryLabel ? `Men's ${activeCategoryLabel}` : "Men's Clothing";
   const sectionTitle = activeCategoryLabel ? `Shop ${activeCategoryLabel}` : 'Shop by Category';
-  const carouselTitle = activeCategoryLabel ? `Trending in ${activeCategoryLabel}` : "Trending in Men's";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const LIMIT = 50;
 
+  const listParams = activeCategory
+    ? { collection_id: activeCollectionId, limit: LIMIT, order: 'created_at DESC' as const }
+    : { gender: 'men' as const, limit: LIMIT, order: 'created_at DESC' as const };
+
+  // Initial load + reset on category change
   useEffect(() => {
     setLoading(true);
+    setOffset(0);
+    setHasMore(true);
+    setProducts([]);
+    setBrands([]);
 
-    const fetchProducts = async () => {
-      try {
-        const listParams = activeCategory
-          ? { collection_id: activeCollectionId }
-          : { gender: 'men' as const };
-        const { products } = await api.products.list(listParams);
-        setProducts(products.map(mapProduct));
+    api.products.list({ ...listParams, offset: 0 })
+      .then(({ products: prods }) => {
+        setProducts(prods.map(mapProduct));
+        setHasMore(prods.length >= LIMIT);
+        setOffset(LIMIT);
         const seen = new Set<string>();
         const unique: string[] = [];
-        for (const p of products) {
+        for (const p of prods) {
           const b = p.brand?.trim();
           if (b && !seen.has(b)) {
             seen.add(b);
@@ -123,16 +134,40 @@ export function Men() {
           }
         }
         setBrands(unique);
-      } catch {
+      })
+      .catch(() => {
         setProducts([]);
         setBrands([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+      })
+      .finally(() => setLoading(false));
   }, [activeCollectionId, activeCategory]);
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const { products: newProds } = await api.products.list({ ...listParams, offset });
+      setProducts(prev => [...prev, ...newProds.map(mapProduct)]);
+      setOffset(prev => prev + LIMIT);
+      setHasMore(newProds.length >= LIMIT);
+    } catch {
+      // keep existing products
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, offset, listParams]);
+
+  // IntersectionObserver for infinite scroll
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) loadMore(); },
+      { threshold: 0.1 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   return (
     <main>
@@ -180,19 +215,57 @@ export function Men() {
         </div>
       </div>
 
-      {!loading && products.length > 0 ? (
-        <ProductCarousel
-          title={carouselTitle}
-          products={products}
-          displayMode="grid"
-        />
-      ) : (
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-center text-gray-500">
-            {loading ? 'Loading...' : "No men's products yet. Visit /admin to add products."}
-          </p>
-        </div>
-      )}
+      <PromoBanner
+        image="https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?auto=format&fit=crop&q=80&w=2000"
+        title="The Shirt Collection"
+        subtitle="From crisp dress shirts to relaxed casuals, find your fit."
+        buttonText="Shop Shirts"
+        to={getMenCategoryHref('shirts')}
+        align="right"
+      />
+
+      {/* Products Grid */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 className="text-2xl font-bold mb-6">
+          {activeCategoryLabel ? `All ${activeCategoryLabel}` : "All Men's"}
+        </h2>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[3/4] bg-gray-200 rounded mb-2" />
+                <div className="h-3 bg-gray-200 rounded w-2/3 mb-1" />
+                <div className="h-3 bg-gray-200 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <p className="text-center text-gray-500 py-12">No products yet. Visit /admin to add products.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {products.map(product => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </div>
+
+            {loadingMore && (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black" />
+              </div>
+            )}
+
+            {!hasMore && products.length > 0 && (
+              <p className="text-center text-gray-400 text-sm py-8">
+                Showing all {products.length} products
+              </p>
+            )}
+
+            <div ref={sentinelRef} className="h-4" />
+          </>
+        )}
+      </div>
 
       {brands.length > 0 && <BrandMarquee brands={brands} />}
     </main>

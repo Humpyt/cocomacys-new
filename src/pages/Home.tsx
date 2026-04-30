@@ -79,15 +79,15 @@ export function Home() {
     }).then(({ products }) => products.filter(p => p.images && p.images.length > 0));
 
     const fetchDiscover = api.products.list({
-      limit: 100,
+      limit: 50,
       order: 'created_at DESC',
-    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0 && !isProductOnSale(p)).slice(0, 6));
+    }).then(({ products }) => products.filter(p => p.images && p.images.length > 0 && !isProductOnSale(p)));
 
     Promise.all([fetchMenProducts, fetchMenShoes, fetchWomenPicks, fetchDiscover])
       .then(([menShirts, menShoes, womenPicks, discover]) => {
         const combinedMen = [...menShirts, ...menShoes].sort(() => Math.random() - 0.5);
-        setMensProducts(combinedMen.slice(0, 8));
-        setWomensPicks(womenPicks.sort(() => Math.random() - 0.5).slice(0, 8));
+        setMensProducts(combinedMen);
+        setWomensPicks(womenPicks.sort(() => Math.random() - 0.5));
         setDiscoverProducts(discover);
       })
       .catch(err => {
@@ -98,13 +98,13 @@ export function Home() {
 
   useEffect(() => {
     if (lovedTab === 'new-arrivals') {
-      api.products.list({ limit: 6, order: 'created_at DESC' })
-        .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0).slice(0, 6)));
+      api.products.list({ limit: 50, order: 'created_at DESC' })
+        .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0)));
     } else if (lovedTab === 'dressy') {
-      api.products.list({ collection_id: COLLECTION_IDS.women.subcategories.dresses, limit: 6, order: 'created_at DESC' })
+      api.products.list({ collection_id: COLLECTION_IDS.women.subcategories.dresses, limit: 50, order: 'created_at DESC' })
         .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0)));
     } else if (lovedTab === 'handbags') {
-      api.products.list({ collection_id: COLLECTION_IDS.women.subcategories.bags, limit: 6, order: 'created_at DESC' })
+      api.products.list({ collection_id: COLLECTION_IDS.women.subcategories.bags, limit: 50, order: 'created_at DESC' })
         .then(({ products }) => setLovedProducts(products.filter(p => p.images && p.images.length > 0)));
     }
   }, [lovedTab]);
