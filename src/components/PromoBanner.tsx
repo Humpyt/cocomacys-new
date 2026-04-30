@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 interface PromoBannerProps {
@@ -12,7 +11,7 @@ interface PromoBannerProps {
   height?: string;
 }
 
-export const PromoBanner = memo(function PromoBanner({
+export function PromoBanner({
   image,
   title,
   subtitle,
@@ -48,4 +47,4 @@ export const PromoBanner = memo(function PromoBanner({
       </Link>
     </div>
   );
-});
+}

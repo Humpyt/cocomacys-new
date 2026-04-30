@@ -50,7 +50,6 @@ export function HeroSection() {
             <img
               src={slide.image}
               alt={slide.title}
-              fetchPriority={i === 0 ? "high" : undefined}
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-black/20" />

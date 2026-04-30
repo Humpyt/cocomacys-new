@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getWomenCategoryHref, getMenCategoryHref } from '../lib/navigation';
 
@@ -12,7 +12,7 @@ interface CategoryStripProps {
   }>;
 }
 
-export const CategoryStrip = memo(function CategoryStrip({ sections }: CategoryStripProps) {
+export function CategoryStrip({ sections }: CategoryStripProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const scroll = (direction: number) => {
@@ -82,4 +82,4 @@ export const CategoryStrip = memo(function CategoryStrip({ sections }: CategoryS
       </div>
     </div>
   );
-});
+}

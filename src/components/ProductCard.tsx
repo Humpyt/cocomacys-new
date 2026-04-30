@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getColorHex } from '../lib/images';
@@ -20,7 +19,7 @@ export interface ProductCardProps {
   onToggleWishlist?: (productId: number) => void;
 }
 
-export const ProductCard = memo(function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, colors, promo, isWishlisted, onToggleWishlist }: ProductCardProps) {
+export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, colors, promo, isWishlisted, onToggleWishlist }: ProductCardProps) {
   const productUrl = href || (id != null ? `/product?id=${encodeURIComponent(id)}` : '/product');
   const numericId = id != null ? Number(id) : 0;
   return (
@@ -74,4 +73,4 @@ export const ProductCard = memo(function ProductCard({ id, href, image, brand, n
       </div>
     </Link>
   );
-});
+}
