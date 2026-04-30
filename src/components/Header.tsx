@@ -1,15 +1,75 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, ShoppingBag, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useCart } from '../context/CartContext';
+import { api, formatCurrency, getProductPrice, type ApiProductRecord } from '../lib/api';
+import { getImageSrc } from '../lib/images';
 
 export function Header() {
   const { customer, logout } = useCustomerAuth();
   const { itemCount, openDrawer } = useCart();
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<ApiProductRecord[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const performSearch = useCallback(async (q: string) => {
+    if (!q.trim()) {
+      setSearchResults([]);
+      setSearchOpen(false);
+      return;
+    }
+    setIsSearching(true);
+    try {
+      const { products } = await api.products.list({ search: q.trim(), limit: 8 });
+      setSearchResults(products);
+      setSearchOpen(true);
+    } catch {
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => performSearch(value), 300);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setSearchOpen(false);
+      searchInputRef.current?.blur();
+    }
+  };
+
+  const selectResult = (productId: number) => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    navigate(`/product?id=${encodeURIComponent(String(productId))}`);
+  };
+
+  // Close search on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -48,14 +108,70 @@ export function Header() {
           </Link>
         </div>
 
-        <div className="flex-1 max-w-2xl mx-8 hidden lg:block">
+        <div className="flex-1 max-w-2xl mx-8 hidden lg:block" ref={searchRef}>
           <div className="relative">
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="What are you looking for?"
+              value={searchQuery}
+              onChange={e => handleSearchChange(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
               className="w-full border border-gray-300 rounded-full py-2 pl-4 pr-10 focus:outline-none focus:border-black"
             />
             <Search className="absolute right-3 top-2.5 text-gray-400" size={20} />
+
+            {/* Search Results Dropdown */}
+            {searchOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden">
+                {isSearching ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div className="py-6 text-center text-gray-500 text-sm">
+                    No products found for "{searchQuery}"
+                  </div>
+                ) : (
+                  <>
+                    <div className="max-h-[420px] overflow-y-auto">
+                      {searchResults.map(product => (
+                        <button
+                          key={product.id}
+                          onClick={() => selectResult(Number(product.id))}
+                          className="w-full flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-50 last:border-b-0"
+                        >
+                          <div className="w-12 h-12 shrink-0 rounded-lg bg-gray-100 overflow-hidden">
+                            <img
+                              src={getImageSrc(product.images?.[0])}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const t = e.target as HTMLImageElement;
+                                t.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                            <p className="text-xs text-gray-500">{product.brand || product.category || '—'}</p>
+                          </div>
+                          <p className="text-sm font-semibold text-gray-900 shrink-0">
+                            {formatCurrency(getProductPrice(product))}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="border-t border-gray-100 px-4 py-2.5 bg-gray-50">
+                      <p className="text-xs text-gray-400">
+                        {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} — type more to refine
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

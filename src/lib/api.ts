@@ -47,6 +47,7 @@ export interface ProductListParams {
   collection_id?: string;
   category?: string;
   gender?: 'men' | 'women';
+  search?: string;
   limit?: number;
   order?: string;
 }
@@ -290,6 +291,10 @@ export const api = {
 
       if (params.gender) {
         searchParams.set('gender', params.gender);
+      }
+
+      if (params.search) {
+        searchParams.set('search', params.search);
       }
 
       const query = searchParams.toString();

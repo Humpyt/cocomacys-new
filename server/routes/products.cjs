@@ -6,13 +6,19 @@ const requireAuth = require('../middleware/requireAuth.cjs');
 // GET /api/products - list with filtering
 router.get('/', async (req, res) => {
   try {
-    const { category, collection_id, gender, limit = 20, offset = 0, order = 'created_at DESC' } = req.query;
+    const { category, collection_id, gender, search, limit = 20, offset = 0, order = 'created_at DESC' } = req.query;
     let query = `SELECT id, name, brand, price, original_price, discount,
       promo, rating, reviews, images, colors, category, collection_id,
       created_at, updated_at
       FROM products WHERE 1=1`;
     const params = [];
     let paramCount = 0;
+
+    if (search) {
+      paramCount++;
+      query += ` AND (name ILIKE $${paramCount} OR brand ILIKE $${paramCount} OR category ILIKE $${paramCount})`;
+      params.push(`%${search}%`);
+    }
 
     if (category) {
       paramCount++;
