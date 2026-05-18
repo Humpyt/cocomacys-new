@@ -27,6 +27,7 @@ function toCardProps(product: ApiProductRecord) {
     brand: formatProductLabel(product.brand, product.category) || 'Brand',
     name: product.name,
     price: formatCurrency(price),
+    sizes: product.sizes ?? [],
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
   };

@@ -3,12 +3,22 @@ const router = express.Router();
 const pool = require('../db.cjs');
 const requireAuth = require('../middleware/requireAuth.cjs');
 
+function normalizeStringArray(input) {
+  if (!Array.isArray(input)) return [];
+
+  return [...new Set(
+    input
+      .map((entry) => String(entry).trim())
+      .filter(Boolean)
+  )];
+}
+
 // GET /api/products - list with filtering
 router.get('/', async (req, res) => {
   try {
     const { category, collection_id, gender, search, limit = 20, offset = 0, order = 'created_at DESC' } = req.query;
     let query = `SELECT id, name, brand, price, original_price, discount,
-      promo, rating, reviews, images, colors, category, collection_id,
+      promo, rating, reviews, images, colors, sizes, category, collection_id,
       created_at, updated_at
       FROM products WHERE 1=1`;
     const params = [];
@@ -103,6 +113,10 @@ router.post('/', requireAuth, async (req, res) => {
       }
     }
 
+    const normalizedColors = normalizeStringArray(colors);
+    const normalizedSizes = normalizeStringArray(sizes);
+    const normalizedTypes = normalizeStringArray(types);
+
     const result = await pool.query(
       `INSERT INTO products (name, brand, description, price, original_price, discount,
         promo, rating, reviews, images, colors, sizes, types, features, details, category, collection_id)
@@ -110,8 +124,8 @@ router.post('/', requireAuth, async (req, res) => {
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
        promo, rating || 0, reviews || 0, images || [],
-       JSON.stringify(colors || []), JSON.stringify(sizes || []),
-       JSON.stringify(types || []), features || [], details, resolvedCategory, collection_id || null]
+       JSON.stringify(normalizedColors), JSON.stringify(normalizedSizes),
+       JSON.stringify(normalizedTypes), features || [], details, resolvedCategory, collection_id || null]
     );
 
     res.status(201).json(result.rows[0]);
@@ -140,6 +154,10 @@ router.put('/:id', requireAuth, async (req, res) => {
       }
     }
 
+    const normalizedColors = colors != null ? normalizeStringArray(colors) : null;
+    const normalizedSizes = sizes != null ? normalizeStringArray(sizes) : null;
+    const normalizedTypes = types != null ? normalizeStringArray(types) : null;
+
     const result = await pool.query(
       `UPDATE products SET
         name = COALESCE($1, name),
@@ -164,9 +182,9 @@ router.put('/:id', requireAuth, async (req, res) => {
        RETURNING *`,
       [name, brand, description, price, original_price, discount,
        promo, rating, reviews, images,
-       colors != null ? JSON.stringify(colors) : null,
-       sizes != null ? JSON.stringify(sizes) : null,
-       types != null ? JSON.stringify(types) : null,
+       normalizedColors != null ? JSON.stringify(normalizedColors) : null,
+       normalizedSizes != null ? JSON.stringify(normalizedSizes) : null,
+       normalizedTypes != null ? JSON.stringify(normalizedTypes) : null,
        features, details, resolvedCategory, collection_id, id]
     );
 

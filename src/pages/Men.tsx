@@ -32,6 +32,7 @@ interface Product {
   originalPrice?: string;
   discount?: string;
   promo?: string;
+  sizes?: string[];
   rating: number;
   reviews: number;
 }
@@ -89,6 +90,7 @@ function mapProduct(product: ApiProductRecord): Product {
     originalPrice: originalPrice != null ? formatCurrency(originalPrice) : undefined,
     discount: getProductDiscountLabel(product),
     promo: product.promo ?? undefined,
+    sizes: product.sizes ?? [],
     rating: getProductRating(product),
     reviews: product.reviews ?? 0,
   };

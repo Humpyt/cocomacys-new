@@ -13,11 +13,12 @@ export interface ProductCardProps {
   rating: number;
   reviews: number;
   promo?: string;
+  sizes?: string[];
   isWishlisted?: boolean;
   onToggleWishlist?: (productId: number) => void;
 }
 
-export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, promo, isWishlisted, onToggleWishlist }: ProductCardProps) {
+export function ProductCard({ id, href, image, brand, name, price, originalPrice, discount, rating, reviews, promo, sizes, isWishlisted, onToggleWishlist }: ProductCardProps) {
   const productUrl = href || (id != null ? `/product?id=${encodeURIComponent(id)}` : '/product');
   const numericId = id != null ? Number(id) : 0;
   return (
@@ -38,10 +39,15 @@ export function ProductCard({ id, href, image, brand, name, price, originalPrice
       <div className="flex flex-col flex-1">
         <span className="font-bold text-sm mb-1">{brand}</span>
         <span className="text-sm text-gray-700 mb-2 line-clamp-2">{name}</span>
+        {sizes && sizes.length > 0 && (
+          <span className="text-[10px] leading-tight text-gray-500 mb-2 line-clamp-1">
+            Sizes: <span className="font-semibold">{sizes.join(', ')}</span>
+          </span>
+        )}
         
         <div className="mt-auto">
           <div className="flex items-baseline space-x-2 mb-1">
-            <span className="font-bold text-gray-900">{price}</span>
+            <span className="text-sm font-normal text-gray-900">{price}</span>
             {originalPrice && <span className="text-sm text-gray-500 line-through">{originalPrice}</span>}
             {discount && <span className="text-sm text-orange-600">({discount})</span>}
           </div>

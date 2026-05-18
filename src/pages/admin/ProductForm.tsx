@@ -90,7 +90,12 @@ export function ProductForm() {
   ) => setForm(prev => ({ ...prev, [field]: e.target.value }));
 
   const parseArray = (val: string) =>
-    val.split(',').map(s => s.trim()).filter(Boolean);
+    [...new Set(
+      val
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+    )];
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,12 +160,12 @@ export function ProductForm() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="w-full max-w-3xl p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <button
           onClick={() => navigate('/admin/products')}
-          className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
         >
           <ArrowLeft size={18} />
         </button>
@@ -178,7 +183,7 @@ export function ProductForm() {
 
       <form onSubmit={handleSave} className="space-y-8">
         {/* Basic Info */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6">
+        <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
@@ -189,7 +194,7 @@ export function ProductForm() {
                 onChange={set('name')}
                 required
                 placeholder="e.g. Navy Blue T-Shirts"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -199,7 +204,7 @@ export function ProductForm() {
                 value={form.brand}
                 onChange={set('brand')}
                 placeholder="e.g. Polo Ralph Lauren"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div className="sm:col-span-2">
@@ -226,9 +231,9 @@ export function ProductForm() {
         </section>
 
         {/* Pricing */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6">
+        <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Pricing</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Price (USh) *</label>
               <input
@@ -239,7 +244,7 @@ export function ProductForm() {
                 min="0"
                 step="100"
                 placeholder="200000"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -251,7 +256,7 @@ export function ProductForm() {
                 min="0"
                 step="100"
                 placeholder="300000"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -261,7 +266,7 @@ export function ProductForm() {
                 value={form.discount}
                 onChange={set('discount')}
                 placeholder="e.g. 30% off"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -271,21 +276,21 @@ export function ProductForm() {
                 value={form.promo}
                 onChange={set('promo')}
                 placeholder="e.g. Buy 1 Get 1"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
           </div>
         </section>
 
         {/* Collection */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6">
+        <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Collection Assignment</h2>
           <div>
             <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Assign to Collection</label>
             <select
               value={form.collection_id}
               onChange={set('collection_id')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+              className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
             >
               <option value="">— No collection —</option>
               {collections.map(c => (
@@ -297,7 +302,7 @@ export function ProductForm() {
         </section>
 
         {/* Images */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6">
+        <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Product Images</h2>
           <ImageUploader
             value={form.images}
@@ -306,7 +311,7 @@ export function ProductForm() {
         </section>
 
         {/* Variants & Attributes */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6">
+        <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Variants & Attributes</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -316,7 +321,7 @@ export function ProductForm() {
                 value={form.colors}
                 onChange={set('colors')}
                 placeholder="Navy, White, Red (comma-separated)"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -326,8 +331,9 @@ export function ProductForm() {
                 value={form.sizes}
                 onChange={set('sizes')}
                 placeholder="S, M, L, XL (comma-separated)"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
+              <p className="mt-1 text-xs text-gray-400">Use commas to separate sizes, for example: S, M, L, XL.</p>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Types</label>
@@ -336,7 +342,7 @@ export function ProductForm() {
                 value={form.types}
                 onChange={set('types')}
                 placeholder="e.g. Casual, Formal (comma-separated)"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -346,7 +352,7 @@ export function ProductForm() {
                 value={form.features}
                 onChange={set('features')}
                 placeholder="e.g. Breathable, Eco-friendly"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -358,7 +364,7 @@ export function ProductForm() {
                 min="0"
                 max="5"
                 step="0.1"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
             <div>
@@ -368,37 +374,37 @@ export function ProductForm() {
                 value={form.reviews}
                 onChange={set('reviews')}
                 min="0"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full min-h-11 border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-orange-500"
               />
             </div>
           </div>
         </section>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
           {isEdit && (
             <button
               type="button"
               onClick={handleDelete}
               disabled={deleting}
-              className="flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold text-sm disabled:opacity-50"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-red-200 px-4 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold text-sm disabled:opacity-50 sm:border-0 sm:justify-start sm:px-0"
             >
               <Trash2 size={16} />
               {deleting ? 'Deleting...' : 'Delete Product'}
             </button>
           )}
-          <div className="flex gap-3 ml-auto">
+          <div className="grid grid-cols-2 gap-3 sm:ml-auto sm:flex">
             <button
               type="button"
               onClick={() => navigate('/admin/products')}
-              className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50"
+              className="min-h-11 px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-600 text-white font-semibold text-sm hover:bg-orange-700 disabled:opacity-50"
+              className="flex min-h-11 items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-orange-600 text-white font-semibold text-sm hover:bg-orange-700 disabled:opacity-50"
             >
               <Save size={16} />
               {saving ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Product'}
